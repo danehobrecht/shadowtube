@@ -250,12 +250,12 @@ def search_dict(partial, search_key):
 print("\nShadowTube\n\n1. Video\n2. Comments\n")
 while True:
 	try:
-		inp = int(input("Enter 1 or 2: "))
+		choice = int(input("Enter 1 or 2: "))
 	except ValueError:
 		continue
-	if inp in (1, 2):
+	if choice in (1, 2):
 		break
-if inp == 1:
+if choice == 1:
 	while True:
 		try:
 			url = input("YouTube video URL: ")
@@ -274,7 +274,7 @@ if inp == 1:
 		except ValueError:
 			continue
 	video(url, rotations)
-elif inp == 2:
+elif choice == 2:
 	while True:
 		try:
 			confirm = str(input('Comment history must be locally available as: "Google - My Activity.html".\nConfirm? (Y) ') or "y")

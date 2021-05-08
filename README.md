@@ -10,4 +10,4 @@ Bash version of ShadowTube.
 
 `python3 main.py`
 
-For more information, refer to the README file at https://github.com/danehobrecht/shadowtube
+For more information, refer to https://github.com/danehobrecht/shadowtube/blob/main/README.md
