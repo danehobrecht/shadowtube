@@ -53,7 +53,7 @@ def video(url, rotations):
 		print("\n" + title)
 	print(url + "\n")
 
-	while attempts < locations:
+	while attempts < rotations:
 		rotate_connection()
 		title_query = "https://www.youtube.com/results?search_query=" + "+".join(title.split()).replace('\n', '')
 		title_search = get_tor_session().get(title_query).text
