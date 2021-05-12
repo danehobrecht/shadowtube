@@ -257,10 +257,10 @@ def search_dict(partial, search_key):
 
 ### Menu
 
-print("ShadowTube\n\n1. Video\n2. Comments\n")
+print("ShadowTube\n\n1. Video\n2. Comments\n3. Dicussion/Community posts (under development)\n")
 while True:
 	try:
-		choice = int(input("Enter 1 or 2: "))
+		choice = int(input("Choose an option: "))
 	except ValueError:
 		continue
 	if choice in (1, 2):
