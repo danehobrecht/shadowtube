@@ -1,18 +1,28 @@
-from __future__ import print_function
-from lxml.cssselect import CSSSelector
-from stem.control import Controller
-from requests import get
-from array import array
-from stem import Signal
+#!/user/bin/python3
 
+### Dependencies
+
+from __future__ import print_function
+from array import array
 import subprocess
-import lxml.html
-import argparse, requests
+import argparse
 import socket, shutil
-import socks
 import time, json, html
 import sys
 import re, io, os
+
+try:
+	from lxml.cssselect import CSSSelector
+	from stem.control import Controller
+	from requests import get
+	from stem import Signal
+	import lxml.html
+	import requests
+	import socket
+	import socks
+except ImportError:
+    print("Some dependencies couldn't be imported (likely not installed).\n\nTo install dependencies, run:\n\tpip3 install -r requirements.txt\n\nExiting.")
+    exit()
 
 YOUTUBE_VIDEO_URL = "https://www.youtube.com/watch?v={youtubeId}"
 YOUTUBE_COMMENTS_AJAX_URL = "https://www.youtube.com/comment_service_ajax"
@@ -34,7 +44,7 @@ def rotate_connection():
 try:
 	get_tor_session().get("http://icanhazip.com").text
 except IOError:
-	print("Tor service required to be running for script execution. Exiting.")
+	print("Tor browser must be running during script execution to access required services.\n\nExiting.")
 	exit()
 
 ### Videos - https://youtu.be/Y6ljFaKRTrI
@@ -71,11 +81,11 @@ def video(url, rotations):
 				print(" Unknown location.")
 			attempts += 1
 	if attempts == accessible and accessible > 0:
-		print("\nNo abnormal behavior detected.")
+		print("\nNo abnormal behavior.")
 	elif attempts > accessible:
-		print("\nQuestionable behavior detected.")
+		print("\nQuestionable behavior.")
 	elif accessible == 0:
-		print("\nAlarming behavior detected.")
+		print("\nAlarming behavior.")
 
 ### Comments - https://www.youtube.com/feed/history/comment_history
 
@@ -105,6 +115,7 @@ def comments():
 					j = json.read()
 					if j.find(uuid) >= 0:
 						print("[ ✓ ]", end="")
+						instances += 1
 					else:
 						print("[ X ]", end="")
 						if instances > 0:
@@ -115,7 +126,6 @@ def comments():
 						print(" " + r_dict["country"] + " (" + r_dict["ip"] + ")")
 					except IOError:
 						print(" Unknown location.")
-					instances += 1
 			if private == bool(False):
 				if instances > 0:
 					accessible += 1
@@ -127,7 +137,7 @@ def comments():
 		if attempts == accessible and accessible > 0:
 			print("No abnormal behavior detected. All comments are publicly available.")
 		elif attempts > accessible:
-			print("Questionable behavior detected in " + str(attempts - accessible) + " comment(s) of " + str(attempts) + " attempted.")
+			print("Questionable behavior in " + str(attempts - accessible) + " comment(s) of " + str(attempts) + " attempted.")
 		else:
 			print(str(accessible) + " of " + str(attempts) + " comments publicly available.")
 
@@ -193,7 +203,7 @@ def download_comments(youtubeId, sleep=.1):
 			return
 	except UnboundLocalError:
 		private = bool(True	)
-		print("Video unavailable.\n")
+		print("Video unavailable.")
 		return
 	continuations = [(ncd['continuation'], ncd['clickTrackingParams'], 'action_get_comments')]
 	while continuations:
@@ -247,7 +257,7 @@ def search_dict(partial, search_key):
 
 ### Menu
 
-print("\nShadowTube\n\n1. Video\n2. Comments\n")
+print("ShadowTube\n\n1. Video\n2. Comments\n")
 while True:
 	try:
 		choice = int(input("Enter 1 or 2: "))
@@ -258,26 +268,26 @@ while True:
 if choice == 1:
 	while True:
 		try:
-			url = input("YouTube video URL: ")
+			url = input("YouTube video URL in question: ")
 			if "https://youtu.be/" in url or "https://www.youtube.com/watch?v=" in url:
-				break		
+				break
 		except ValueError:
 			continue
 	while True:
 		try:
-			rotations = int(input("Number of locations (default & minimum is 5): ") or 5)
-			if rotations >= 5:
-				break
+			rotations = int(input("Number of locations to try (default & minimum is 5): ") or 5)
 			if rotations >= 1000:
 				print("Input exceeds logical value.")
 				continue
+			if rotations >= 5:
+				break
 		except ValueError:
 			continue
 	video(url, rotations)
 elif choice == 2:
 	while True:
 		try:
-			confirm = str(input('Comment history must be locally available as: "Google - My Activity.html".\nConfirm? (Y) ') or "y")
+			confirm = str(input('Basic HTML data from https://www.youtube.com/feed/history/comment_history\nmust be locally available to the script as "Google - My Activity.html".\nConfirm? (Y) ') or "y")
 			if confirm == "Y" or confirm == "y":
 				try:
 					io.open("Google - My Activity.html", "r")
