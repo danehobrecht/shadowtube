@@ -16,6 +16,7 @@ try:
 	from stem.control import Controller
 	from requests import get
 	from stem import Signal
+	from stem.connection import IncorrectPassword
 	import lxml.html
 	import requests
 	import socket
@@ -30,6 +31,8 @@ USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTM
 
 ### Tor
 
+password = ""
+
 def get_tor_session():
 	session = requests.Session()
 	session.proxies = {"http": "socks5://localhost:9150", "https": "socks5://localhost:9150"}
@@ -37,10 +40,13 @@ def get_tor_session():
 
 def rotate_connection():
 	time.sleep(10)
-	with Controller.from_port(port = 9151) as c:
-		c.authenticate()
-		c.signal(Signal.NEWNYM)
-
+	try:
+		with Controller.from_port(port = 9151) as c:
+			c.authenticate(password=password)
+			c.signal(Signal.NEWNYM)
+	except IncorrectPassword:
+		print("Error: Failed to authenticate. Tor Control Port Password Incorrect")
+		sys.exit(1)
 try:
 	get_tor_session().get("http://icanhazip.com").text
 except IOError:
@@ -257,7 +263,9 @@ def search_dict(partial, search_key):
 
 ### Menu
 
-print("ShadowTube\n\n1. Video\n2. Comments\n3. Dicussion/Community posts (under development)\n")
+print("Enter your Tor Control Port password: ")
+password = input()
+print("\nShadowTube\n\n1. Video\n2. Comments\n3. Dicussion/Community posts (under development)\n")
 while True:
 	try:
 		choice = int(input("Choose an option: "))
