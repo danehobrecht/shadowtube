@@ -2,7 +2,7 @@
 
 Bash version of ShadowTube.
 
-1. Setup Tor to accept a control password [Instructions](https://github.com/danehobrecht/shadowtube-bash/blob/main/torinst.md)
+1. Setup Tor to accept a control password [Instructions](https://github.com/Hauteknits/shadowtube-bash/blob/main/torinst.md)
 
 2. Install dependencies
 
