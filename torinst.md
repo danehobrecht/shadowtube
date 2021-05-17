@@ -13,7 +13,6 @@ HashedControlPassword 16:43EAB78403DE31976030CFEC0BDE888EA9D5BAC62F9284A446383AC
 ---
 #### Cookie authentication
 Uncommment `CookieAuthentication 1`
----
 ### Additional security steps
 To prevent unauthorized users from accessing `tor`, consider adding the following steps:
 - Change your SOCKS5 and control ports to a port not commonly used
