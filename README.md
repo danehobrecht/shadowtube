@@ -1,6 +1,6 @@
 # ShadowTube
 Bash version of ShadowTube.
-1. Configure [torrc](##configuring-torrc)
+1. Configure [Titles](##titles)
 2. Install dependencies
 ```
 pip3 install -r requirements.txt
@@ -10,7 +10,7 @@ pip3 install -r requirements.txt
 ```
 python3 main.py
 ```
-## Configuring torrc
+## Titles
 1. Hash a custom control password
 ```
 tor --hash-password <password>
