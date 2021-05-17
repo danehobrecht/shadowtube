@@ -1,5 +1,8 @@
 # ShadowTube
-Bash version of ShadowTube.
+Analyzation features:
+ - Video links
+ - Complete comment history (alpha)
+ - "Discussion", or, "Community" posts (under development)
 1. [Configure torrc](#configure-torrc)
 2. Install dependencies
 ```
@@ -42,7 +45,6 @@ SocksPolicy reject *
 ```
 This step limits connection only to the local loopback address, effectively limiting connections originating from the local machine.
 - As always, [RTFM](https://tor.void.gr/docs/tor-manual.html.en)
-
 ## Sample outputs
 ```
 "Me at the zoo"
@@ -86,15 +88,11 @@ Accessible in China (23.154.177.131)
 
 No abnormal behavior detected. All comments are publicly available.
 ```
-
 ## Prerequisites
-
  - [Python 3.7.3+ & pip3](https://www.python.org/downloads/)
  - [Tor Browser](https://www.torproject.org/)
  - [virtualen](https://pypi.org/project/virtualenv/)
-
 ## Known compatability issues (subject to change)
-
  - Video premieres
  - Geometric unicode characters in titles
  - Discussion posts
