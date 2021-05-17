@@ -4,7 +4,7 @@ Analyzation features:
  - Complete comment history (alpha)
  - "Discussion", or, "Community" posts (under development)
 ## Setup
-1. Download & navigate to directory
+1. Clone the repository and navigate to the directory
 ```
 git clone https://github.com/danehobrecht/shadowtube.git && cd shadowtube
 ```
@@ -13,8 +13,8 @@ git clone https://github.com/danehobrecht/shadowtube.git && cd shadowtube
 pip3 install -r requirements.txt
 ```
 3. [Configure torrc](#configure-torrc)
-4. Launch Tor Browser
-5. Run
+4. Launch an instance of Tor Browser
+5. Run 
 ```
 python3 main.py
 ```
