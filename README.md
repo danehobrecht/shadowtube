@@ -1,15 +1,24 @@
 # ShadowTube
 Bash version of ShadowTube.
 1. [Setup Tor](https://github.com/danehobrecht/shadowtube-bash/blob/main/torinst.md)
-2. Install dependencies\
-`pip3 install -r requirements.txt`
+2. Install dependencies
+```
+pip3 install -r requirements.txt
+```
 4. Launch an instance of Tor
-5. Run\
-`python3 main.py`
+5. Run
+```
+python3 main.py
+```
 ## Configuring torrc
-1. Run `tor --hash-password <password>`
-2. Open `torrc` with your favorite text editor\
-`sudo nano /etc/tor/torrc`
+1. Run 
+```
+tor --hash-password <password>
+```
+3. Open `torrc` with your favorite text editor\
+```
+sudo nano /etc/tor/torrc
+```
 4. Append the hashed password to `HashedControlPassword`
 5. Uncomment `ControlPort`
 ### Additional security steps
