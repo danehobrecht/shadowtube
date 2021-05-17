@@ -6,7 +6,7 @@ Bash version of ShadowTube.
 4. Launch an instance of Tor
 5. Run\
 `python3 main.py`
-## Configuring torrc
+### Configuring torrc
 1. Run `tor --hash-password <password>`
 2. Open `torrc` with your favorite text editor\
 `sudo nano /etc/tor/torrc`
