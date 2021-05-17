@@ -27,7 +27,7 @@ HashedControlPassword <hash>
 ```
 ControlPort <port>
 ```
-- **Alternatively:** uncomment line 59
+- Alternatively, uncomment line 59
 ```
 CookieAuthentication 1
 ```
