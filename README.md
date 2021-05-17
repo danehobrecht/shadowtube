@@ -1,6 +1,6 @@
 # ShadowTube
 Bash version of ShadowTube.
-1. [Setup Tor](https://github.com/danehobrecht/shadowtube-bash/blob/main/torinst.md)
+1. Configure [torrc](##Configuring torrc)
 2. Install dependencies
 ```
 pip3 install -r requirements.txt
