@@ -1,4 +1,4 @@
-# ShadowTube - Bash
+# ShadowTube
 
 Bash version of ShadowTube.
 
