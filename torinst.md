@@ -1,6 +1,9 @@
 # Configuring torrc
 #### Initial Steps
 1. Open your `torrc` file and uncomment the line `ControlPort`.
+```
+sudo nano /etc/tor/torrc
+```
 2. Pick one of the 2 options below to authenticate with Tor.
 ---
 #### Hashed control password
@@ -11,15 +14,11 @@ tor --hash-password sample_pass123
 ```
 2. Append the hashed password to `HashedControlPassword`
 ```
-sudo nano /etc/tor/torrc
 HashedControlPassword 16:43EAB78403DE31976030CFEC0BDE888EA9D5BAC62F9284A446383ACC1C
 ```
 ---
 #### Cookie authentication
-```
-sudo nano /etc/tor/torrc
-```
-1. Uncommment `CookieAuthentication 1`
+Uncommment `CookieAuthentication 1`
 ---
 ### Additional security steps
 To prevent unauthorized users from accessing `tor`, consider adding the following steps:
