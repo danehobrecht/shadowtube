@@ -4,12 +4,16 @@ Analyzation features:
  - Complete comment history (alpha)
  - "Discussion", or, "Community" posts (under development)
 ## Setup
-1. [Configure torrc](#configure-torrc)
+1. Download & navigate to directory
+```
+git clone https://github.com/danehobrecht/shadowtube.git && cd shadowtube
+```
 2. Install dependencies
 ```
 pip3 install -r requirements.txt
 ```
-3. Launch Tor Browser
+3. [Configure torrc](#configure-torrc)
+4. Launch Tor Browser
 5. Run
 ```
 python3 main.py
