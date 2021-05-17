@@ -23,7 +23,7 @@ tor --hash-password <password>
 sudo nano /etc/tor/torrc
 ```
 3. Append the hashed password to `HashedControlPassword` and uncomment `ControlPort`
-- Alternatively, uncomment `CookieAuthentication 1
+- Alternatively, uncomment `CookieAuthentication 1`
 ```
 ...
 ## The port on which Tor will listen for local connections from Tor
