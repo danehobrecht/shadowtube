@@ -10,7 +10,7 @@ pip3 install -r requirements.txt
 ```
 python3 main.py
 ```
-### Configure Tor
+### Tor Configuration
 1. Hash a custom control password
 ```
 tor --hash-password <password>
