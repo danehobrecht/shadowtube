@@ -89,12 +89,9 @@ No abnormal behavior detected. All comments are publicly available.
 
 ## Prerequisites
 
- - Python 3.7.3+ & pip3
-https://www.python.org/downloads/
- - Tor Browser
-https://www.torproject.org/
- - virtualenv
-https://pypi.org/project/virtualenv/
+ - [Python 3.7.3+ & pip3](https://www.python.org/downloads/)
+ - [Tor Browser](https://www.torproject.org/)
+ - [virtualen](https://pypi.org/project/virtualenv/)
 
 ## Known compatability issues (subject to change)
 
