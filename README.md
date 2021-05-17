@@ -1,4 +1,5 @@
-# ShadowTube
+## ShadowTube
+---
 Bash version of ShadowTube.
 1. Configure [torrc](#configure-tor)
 2. Install dependencies
