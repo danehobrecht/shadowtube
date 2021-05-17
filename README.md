@@ -43,8 +43,8 @@ SocksPolicy reject *
 This step limits connection only to the local loopback address, effectively limiting connections originating from the local machine.
 - As always, [RTFM](https://tor.void.gr/docs/tor-manual.html.en)
 
-### Sample results
-#### Video
+## Sample outputs
+### Video
 
 ```
 "Me at the zoo"
@@ -59,7 +59,7 @@ https://www.youtube.com/watch?v=jNQXAC9IVRw
 No abnormal behavior detected.
 ```
 
-#### Comments
+### Comments
 
 ```
 "Super clever, really like the use of chickens. The smaller scale interpretations seem to be popular as opposed to som..."
