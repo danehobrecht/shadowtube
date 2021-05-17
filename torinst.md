@@ -12,4 +12,4 @@ SocksPolicy accept 127.0.0.1
 SocksPolicy reject *
 ```
 This step limits connection only to the local loopback address, effectively limiting connections originating from the local machine.
-- As always, [RTFM](https://tor.void.gr/docs/tor-manual.html.en "RTFM")
+- As always, [RTFM](https://tor.void.gr/docs/tor-manual.html.en "RTFM" {:target="_blank"})
