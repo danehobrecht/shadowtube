@@ -1,5 +1,4 @@
 # Configuring torrc
----
 Run `tor --hash-password <password>` and append the hashed password to `HashedControlPassword`
 ```
 HashedControlPassword 16:43EAB78403DE31976030CFEC0BDE888EA9D5BAC62F9284A446383ACC1C
