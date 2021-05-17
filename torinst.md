@@ -7,7 +7,7 @@
 1. run `tor --hash-password <password>`
 
 ```
-tor --hash-password <password>?
+tor --hash-password <password>
 16:43EAB78403DE31976030CFEC0BDE888EA9D5BAC62F9284A446383ACC1C
 ```
 
