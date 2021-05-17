@@ -11,19 +11,22 @@ tor --hash-password <password>
 16:43EAB78403DE31976030CFEC0BDE888EA9D5BAC62F9284A446383ACC1C
 ```
 
-2. Append the hashed password to your `torrc` file preceded by `HashedControlPassword`
+2. Append the hashed password to `HashedControlPassword` in `torrc`
 ```
-sudo vi /etc/tor/torrc
+sudo nano /etc/tor/torrc
 HashedControlPassword 16:43EAB78403DE31976030CFEC0BDE888EA9D5BAC62F9284A446383ACC1C
 ```
 ---
 #### Using Cookie Authentication
-1. From your `torrc`, uncommment the line `CookieAuthentication 1`
+```
+sudo nano /etc/tor/torrc
+```
+Uncommment `CookieAuthentication 1`  in `torrc`
 ---
 ### Additional Security Steps
-To prevent unauthorized users from accessing `tor` considering adding the following steps below
-- Consider changing your SOCKS5 and Tor Control Ports to a port not commonly used
-- **Important for users using Cookie Authentication**: Append the following lines to your `torrc`
+To prevent unauthorized users from accessing `tor`, consider adding the following steps:
+- Change your SOCKS5 and control ports to a port not commonly used
+- **Important for users using cookie authentication**: Append the following lines to your `torrc`
 ```
 SocksPolicy accept 127.0.0.1
 SocksPolicy reject *
