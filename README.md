@@ -2,7 +2,7 @@
 
 Bash version of ShadowTube.
 
-1. Setup/ensure proper Tor setup [Instructions](https://github.com/danehobrecht/shadowtube-bash/blob/main/torinst.md)
+1. Setup/ensure proper [Tor setup](https://github.com/danehobrecht/shadowtube-bash/blob/main/torinst.md)
 
 2. Install dependencies
 
