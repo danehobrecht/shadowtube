@@ -1,8 +1,9 @@
 # Configuring torrc
 1. Run `tor --hash-password <password>`
 2. Open `torrc` with your favorite text editor `sudo nano /etc/tor/torrc`
-3. Append the hashed password to `HashedControlPassword`
-4. Alternatively, uncomment `ControlPort`
+4. Append the hashed password to `HashedControlPassword`
+5. Uncomment `ControlPort`
+6. **Alternatively:** uncomment `CookieAuthentication 1`
 ### Additional security steps
 To prevent unauthorized users from accessing `tor`, consider adding the following steps:
 - Change your SOCKS5 and control ports to a port not commonly used
