@@ -13,7 +13,7 @@ torbrowser-launcher
 ```
 python3 main.py
 ```
-### Configure torrc
+## Configure torrc
 1. Hash a custom control password
 ```
 tor --hash-password <password>
@@ -35,7 +35,7 @@ HashedControlPassword 16:872860B76453A77D60CA2BB8C1A7042072093276A3D701AD684053E
 #CookieAuthentication 1
 ...
 ```
-### Additional security steps
+## Additional security steps
 To prevent unauthorized users from accessing `tor`, consider adding the following steps:
 - Change your SOCKS5 and control ports to a port not commonly used
 - **Important for users using cookie authentication**: Append the following lines to `torrc`
