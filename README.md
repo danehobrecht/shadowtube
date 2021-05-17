@@ -15,7 +15,7 @@ Bash version of ShadowTube.
 `python3 main.py`
 ## Configuring torrc
 1. Run `tor --hash-password <password>`
-2. Open `torrc` with your favorite text editor `sudo nano /etc/tor/torrc`
+2. Open `torrc` with your favorite text editor
 4. Append the hashed password to `HashedControlPassword`
 5. Uncomment `ControlPort`
 ### Additional security steps
