@@ -4,9 +4,9 @@
 2. Pick one of the 2 options below to authenticate with Tor.
 ---
 #### Hashed control password
-1. run `tor --hash-password <password>`
+1. Run `tor --hash-password <password>`
 ```
-tor --hash-password <password>
+tor --hash-password sample_pass123
 16:43EAB78403DE31976030CFEC0BDE888EA9D5BAC62F9284A446383ACC1C
 ```
 2. Append the hashed password to `HashedControlPassword`
@@ -19,7 +19,7 @@ HashedControlPassword 16:43EAB78403DE31976030CFEC0BDE888EA9D5BAC62F9284A446383AC
 ```
 sudo nano /etc/tor/torrc
 ```
-Uncommment `CookieAuthentication 1`
+1. Uncommment `CookieAuthentication 1`
 ---
 ### Additional security steps
 To prevent unauthorized users from accessing `tor`, consider adding the following steps:
