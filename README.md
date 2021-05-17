@@ -29,7 +29,6 @@ ControlPort <port>
 ```
 ---
 **Alternatively:** Uncomment line 59
----
 ### Additional security steps
 To prevent unauthorized users from accessing `tor`, consider adding the following steps:
 - Change your SOCKS5 and control ports to a port not commonly used
