@@ -1,5 +1,4 @@
 # Configuring torrc
-#### Initial Steps
 Open your `torrc` file and uncomment the line `ControlPort`.
 ```
 sudo nano /etc/tor/torrc
@@ -23,5 +22,5 @@ To prevent unauthorized users from accessing `tor`, consider adding the followin
 SocksPolicy accept 127.0.0.1
 SocksPolicy reject *
 ```
-This step limits connection only to the local loopback address, effectively limiting to connections originating from the local machine.
+This step limits connection only to the local loopback address, effectively limiting connections originating from the local machine.
 - As always, [RTFM](https://tor.void.gr/docs/tor-manual.html.en "RTFM")
