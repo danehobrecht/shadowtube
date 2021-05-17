@@ -3,6 +3,7 @@ Analyzation features:
  - Video links
  - Complete comment history (alpha)
  - "Discussion", or, "Community" posts (under development)
+## Run
 1. [Configure torrc](#configure-torrc)
 2. Install dependencies
 ```
