@@ -1,9 +1,7 @@
 # Configuring torrc
-Run `tor --hash-password <password>` and append the hashed password to `HashedControlPassword`
-```
-HashedControlPassword 16:43EAB78403DE31976030CFEC0BDE888EA9D5BAC62F9284A446383ACC1C
-```
-Open your `torrc` file and uncomment the line `ControlPort`.
+1. Run `tor --hash-password <password>`
+2. Append the hashed password to `HashedControlPassword` in `torrc`
+Alternatively, uncomment `ControlPort`
 ```
 sudo nano /etc/tor/torrc
 ```
