@@ -28,5 +28,5 @@ SocksPolicy reject *
 ```
 This step limits connection only to the local loopback address, effectively limiting connections originating from the local machine.
 - As always, [RTFM](https://tor.void.gr/docs/tor-manual.html.en)
-
+---
 For more information, refer to https://github.com/danehobrecht/shadowtube/blob/main/README.md
