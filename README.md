@@ -32,7 +32,7 @@ HashedControlPassword 16:872860B76453A77D60CA2BB8C1A7042072093276A3D701AD684053E
 #CookieAuthentication 1
 ...
 ```
-## Additional security steps
+### Additional security steps
 To prevent unauthorized users from accessing `tor`, consider adding the following steps:
 - Change your SOCKS5 and control ports to a port not commonly used
 - **Important for users using cookie authentication**: Append the following lines to `torrc`
@@ -87,7 +87,7 @@ Accessible in China (23.154.177.131)
 No abnormal behavior detected. All comments are publicly available.
 ```
 
-### Prerequisites
+## Prerequisites
 
  - Python 3.7.3+ & pip3
 https://www.python.org/downloads/
@@ -96,7 +96,7 @@ https://www.torproject.org/
  - virtualenv
 https://pypi.org/project/virtualenv/
 
-### Known compatability issues (subject to change)
+## Known compatability issues (subject to change)
 
  - Video premieres
  - Geometric unicode characters in titles
