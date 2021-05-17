@@ -5,8 +5,8 @@ Bash version of ShadowTube.
 ```
 pip3 install -r requirements.txt
 ```
-4. Launch an instance of Tor
-5. Run
+3. Launch an instance of Tor
+4. Run
 ```
 python3 main.py
 ```
@@ -15,15 +15,15 @@ python3 main.py
 ```
 tor --hash-password <password>
 ```
-3. Open `torrc` with elevated privelages
+2. Open `torrc` with elevated privelages
 ```
 sudo nano /etc/tor/torrc
 ```
-4. Append the hashed password to line 59
+3. Append the hashed password to line 59
 ```
 HashedControlPassword <hash>
 ```
-6. Uncomment line 60
+4. Uncomment line 60
 ```
 ControlPort <port>
 ```
