@@ -1,0 +1,6 @@
+{
+	"socks_port": 9050,
+	"control_port": 9051,
+	"use_control_pass": false,
+	"control_pass": ""
+}

@@ -4,6 +4,7 @@
 
 from __future__ import print_function
 from array import array
+
 import subprocess
 import argparse
 import socket, shutil
@@ -16,6 +17,9 @@ try:
 	from stem.control import Controller
 	from requests import get
 	from stem import Signal
+	from stem.connection import IncorrectPassword
+	from stem import SocketError
+
 	import lxml.html
 	import requests
 	import socket
@@ -24,27 +28,45 @@ except ImportError:
     print("Some dependencies couldn't be imported (likely not installed).\n\nTo install dependencies, run:\n\tpip3 install -r requirements.txt\n\nExiting.")
     exit()
 
+### Global Variables/Settings
+
 YOUTUBE_VIDEO_URL = "https://www.youtube.com/watch?v={youtubeId}"
 YOUTUBE_COMMENTS_AJAX_URL = "https://www.youtube.com/comment_service_ajax"
 USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36"
+
+use_control_pass = False
+socks_port = 9050
+control_Port = 9051
+control_pass = ""
 
 ### Tor
 
 def get_tor_session():
 	session = requests.Session()
-	session.proxies = {"http": "socks5://localhost:9150", "https": "socks5://localhost:9150"}
+	session.proxies = {"http": "socks5://localhost:"+ str(socks_port), "https": "socks5://localhost:"+ str(socks_port)}
 	return session
 
 def rotate_connection():
 	time.sleep(10)
-	with Controller.from_port(port = 9151) as c:
-		c.authenticate()
-		c.signal(Signal.NEWNYM)
+	try:
+		with Controller.from_port(port = 9051) as c:
+			if useControlPass:
+				c.authenticate(password = control_pass)
+				c.signal(Signal.NEWNYM)
+			else:
+				c.authenticate()
+				c.signal(Signal.NEWNYM)
+	except IncorrectPassword:
+		print("Error: Failed to authenticate. Tor control port password incorrect")
+		exit()
+	except SocketError:
+		print("Error: Connection refused. Ensure cookie authentication/control port are enabled.")
+		exit()
 
 try:
 	get_tor_session().get("http://icanhazip.com").text
 except IOError:
-	print("Tor browser must be running during script execution to access required services.\n\nExiting.")
+	print("A Tor browser instance must be running during script execution to access required services.\n\nExiting.")
 	exit()
 
 ### Videos - https://youtu.be/Y6ljFaKRTrI
@@ -255,9 +277,18 @@ def search_dict(partial, search_key):
 			for value in current_item:
 				stack.append(value)
 
-### Menu
+### Menu/Init
 
-print("ShadowTube\n\n1. Video\n2. Comments\n3. Dicussion/Community posts (under development)\n")
+settings_dict = None
+with open('settings.json') as f:
+	settings_dict = json.load(f);
+
+use_control_pass = settings_dict["use_control_pass"]
+control_pass = settings_dict["control_pass"]
+control_port = settings_dict["control_port"]
+socks_port = settings_dict["socks_port"]
+
+print("\nShadowTube\n\n1. Video\n2. Comments\n3. Dicussion/Community posts (under development)\n")
 while True:
 	try:
 		choice = int(input("Choose an option: "))
@@ -293,7 +324,8 @@ elif choice == 2:
 					io.open("Google - My Activity.html", "r")
 					break
 				except IOError:
-					continue
+					print("Error: File does not exist. Please download the file listed above and place it in the project directory. Exiting")
+					Sys.exit(1)
 		except ValueError:
 			continue
 	comments()
