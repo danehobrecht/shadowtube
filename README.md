@@ -5,7 +5,7 @@ Bash version of ShadowTube.
 ```
 pip3 install -r requirements.txt
 ```
-3. Launch an instance of Tor Browser
+3. Launch Tor Browser
 5. Run
 ```
 python3 main.py
