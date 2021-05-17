@@ -11,16 +11,23 @@ pip3 install -r requirements.txt
 python3 main.py
 ```
 ## Configuring torrc
-1. Run 
+1. Hash a custom control password
 ```
 tor --hash-password <password>
 ```
-3. Open `torrc` with your favorite text editor\
+3. Open `torrc` with elevated privelages
 ```
 sudo nano /etc/tor/torrc
 ```
-4. Append the hashed password to `HashedControlPassword`
-5. Uncomment `ControlPort`
+4. Append the hashed password to line 59
+```
+HashedControlPassword <hash>
+```
+6. Uncomment line 60
+```
+ControlPort <port>
+```
+7. **Alternatively:** Uncomment line 59
 ### Additional security steps
 To prevent unauthorized users from accessing `tor`, consider adding the following steps:
 - Change your SOCKS5 and control ports to a port not commonly used
