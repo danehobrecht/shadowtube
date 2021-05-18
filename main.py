@@ -69,9 +69,14 @@ def rotate_connection():
 def video(url, rotations):
 	attempts = 0
 	accessible = 0
-	page_data = requests.get(url).text
-	parse_title = str(re.findall('<title>(.*?) - YouTube</title><meta name="title" content=', page_data))
-	title = html.unescape(parse_title.split("'")[1])
+	while True:
+		try:
+			page_data = get_tor_session().get(url).text
+			parse_title = str(re.findall('<title>(.*?) - YouTube</title><meta name="title" content=', page_data))
+			title = html.unescape(parse_title.split("'")[1])
+			break
+		except IndexError:
+			rotate_connection()
 	if title == "":
 		print("Video unavailable")
 	else:
