@@ -4,7 +4,6 @@
 
 from __future__ import print_function
 from array import array
-
 import subprocess
 import argparse
 import socket, shutil
@@ -19,7 +18,6 @@ try:
 	from stem import Signal
 	from stem.connection import IncorrectPassword
 	from stem import SocketError
-
 	import lxml.html
 	import requests
 	import socket
@@ -28,7 +26,7 @@ except ImportError:
     print("Some dependencies couldn't be imported (likely not installed).\n\nTo install dependencies, run:\n\tpip3 install -r requirements.txt\n\nExiting.")
     exit()
 
-### Global Variables/Settings
+### Global variables/Settings
 
 YOUTUBE_VIDEO_URL = "https://www.youtube.com/watch?v={youtubeId}"
 YOUTUBE_COMMENTS_AJAX_URL = "https://www.youtube.com/comment_service_ajax"
@@ -78,17 +76,14 @@ except IOError:
 def video(url, rotations):
 	attempts = 0
 	accessible = 0
-
 	page_data = requests.get(url).text
 	parse_title = str(re.findall('<title>(.*?) - YouTube</title><meta name="title" content=', page_data))
 	title = html.unescape(parse_title.split("'")[1])
-
 	if title == "":
 		print("Video unavailable")
 	else:
 		print("\n" + title)
 	print(url + "\n")
-
 	while attempts < rotations:
 		rotate_connection()
 		title_query = "https://www.youtube.com/results?search_query=" + "+".join(title.split()).replace('\n', '')
