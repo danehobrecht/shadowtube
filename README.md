@@ -28,12 +28,12 @@ tor --hash-password <password>
 sudo nano /etc/tor/torrc
 ```
 3. Append the hashed password to `HashedControlPassword` and uncomment `ControlPort`
-- Alternatively, uncomment `CookieAuthentication 1`
+**Alternatively, uncomment `CookieAuthentication 1`**
 ```
 ...
 ## The port on which Tor will listen for local connections from Tor
 ## controller applications, as documented in control-spec.txt.
-ControlPort 9051
+ControlPort 9151
 ## If you enable the controlport, be sure to enable one of these
 ## authentication methods, to prevent attackers from accessing it.
 HashedControlPassword 16:872860B76453A77D60CA2BB8C1A7042072093276A3D701AD684053EC4C
