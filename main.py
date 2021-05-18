@@ -34,30 +34,34 @@ YOUTUBE_VIDEO_URL = "https://www.youtube.com/watch?v={youtubeId}"
 YOUTUBE_COMMENTS_AJAX_URL = "https://www.youtube.com/comment_service_ajax"
 USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36"
 
-use_control_pass = False
-socks_port = 9050
-control_Port = 9051
-control_pass = ""
+settings_dict = None
+with open('settings.json') as f:
+	settings_dict = json.load(f);
+
+use_control_pass = settings_dict["use_control_pass"]
+control_pass = settings_dict["control_pass"]
+control_port = settings_dict["control_port"]
+socks_port = settings_dict["socks_port"]
 
 ### Tor
 
 def get_tor_session():
 	session = requests.Session()
-	session.proxies = {"http": "socks5://localhost:"+ str(socks_port), "https": "socks5://localhost:"+ str(socks_port)}
+	session.proxies = {"http": "socks5://localhost:" + str(socks_port), "https": "socks5://localhost:" + str(socks_port)}
 	return session
 
 def rotate_connection():
 	time.sleep(10)
 	try:
-		with Controller.from_port(port = 9051) as c:
-			if useControlPass:
-				c.authenticate(password = control_pass)
+		with Controller.from_port(port=9151) as c:
+			if use_control_pass:
+				c.authenticate(password=control_pass)
 				c.signal(Signal.NEWNYM)
 			else:
 				c.authenticate()
 				c.signal(Signal.NEWNYM)
 	except IncorrectPassword:
-		print("Error: Failed to authenticate. Tor control port password incorrect")
+		print("Error: Failed to authenticate. Tor control port password incorrect.")
 		exit()
 	except SocketError:
 		print("Error: Connection refused. Ensure cookie authentication/control port are enabled.")
@@ -279,16 +283,7 @@ def search_dict(partial, search_key):
 
 ### Menu/Init
 
-settings_dict = None
-with open('settings.json') as f:
-	settings_dict = json.load(f);
-
-use_control_pass = settings_dict["use_control_pass"]
-control_pass = settings_dict["control_pass"]
-control_port = settings_dict["control_port"]
-socks_port = settings_dict["socks_port"]
-
-print("\nShadowTube\n\n1. Video\n2. Comments\n3. Dicussion/Community posts (under development)\n")
+print("ShadowTube\n\n1. Video\n2. Comments\n3. Dicussion/Community posts (under development)\n")
 while True:
 	try:
 		choice = int(input("Choose an option: "))
