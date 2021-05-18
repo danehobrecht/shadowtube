@@ -3,7 +3,6 @@
 ### Dependencies
 
 from __future__ import print_function
-from array import array
 import subprocess
 import argparse
 import socket, shutil
@@ -64,12 +63,6 @@ def rotate_connection():
 	except SocketError:
 		print("Error: Connection refused. Ensure cookie authentication/control port are enabled.")
 		exit()
-
-try:
-	get_tor_session().get("http://icanhazip.com").text
-except IOError:
-	print("A Tor browser instance must be running during script execution to access required services.\n\nExiting.")
-	exit()
 
 ### Videos - https://youtu.be/Y6ljFaKRTrI
 
@@ -276,46 +269,55 @@ def search_dict(partial, search_key):
 			for value in current_item:
 				stack.append(value)
 
-### Menu/Init
+### Init/Menu
 
-print("ShadowTube\n\n1. Video\n2. Comments\n3. Dicussion/Community posts (under development)\n")
-while True:
+def main():
 	try:
-		choice = int(input("Choose an option: "))
-	except ValueError:
-		continue
-	if choice in (1, 2):
-		break
-if choice == 1:
+		get_tor_session().get("http://icanhazip.com").text
+	except IOError:
+		print("A Tor browser instance must be running during script execution to access required services.\n\nExiting.")
+		exit()
+	print("ShadowTube\n\n1. Video\n2. Comments\n3. Dicussion/Community posts (under development)\n")
 	while True:
 		try:
-			url = input("YouTube video URL in question: ")
-			if "https://youtu.be/" in url or "https://www.youtube.com/watch?v=" in url:
-				break
+			choice = int(input("Choose an option: "))
 		except ValueError:
 			continue
-	while True:
-		try:
-			rotations = int(input("Number of locations to try (default & minimum is 5): ") or 5)
-			if rotations >= 1000:
-				print("Input exceeds logical value.")
-				continue
-			if rotations >= 5:
-				break
-		except ValueError:
-			continue
-	video(url, rotations)
-elif choice == 2:
-	while True:
-		try:
-			confirm = str(input('Basic HTML data from https://www.youtube.com/feed/history/comment_history\nmust be locally available to the script as "Google - My Activity.html".\nConfirm? (Y) ') or "y")
-			if confirm == "Y" or confirm == "y":
-				try:
-					io.open("Google - My Activity.html", "r")
+		if choice in (1, 2):
+			break
+	if choice == 1:
+		while True:
+			try:
+				url = input("YouTube video URL in question: ")
+				if "https://youtu.be/" in url or "https://www.youtube.com/watch?v=" in url:
 					break
-				except IOError:
-					print("Error: File does not exist. Please download the file listed above and place it in the project directory. Exiting")
-					Sys.exit(1)
-		except ValueError:
-			continue
-	comments()
+			except ValueError:
+				continue
+		while True:
+			try:
+				rotations = int(input("Number of locations to try (default & minimum is 5): ") or 5)
+				if rotations >= 1000:
+					print("Input exceeds logical value.")
+					continue
+				if rotations >= 5:
+					break
+			except ValueError:
+				continue
+		video(url, rotations)
+	elif choice == 2:
+		while True:
+			try:
+				confirm = str(input('Basic HTML data from https://www.youtube.com/feed/history/comment_history\nmust be locally available to the script as "Google - My Activity.html".\nConfirm? (Y) ') or "y")
+				if confirm == "Y" or confirm == "y":
+					try:
+						io.open("Google - My Activity.html", "r")
+						break
+					except IOError:
+						print("Error: File does not exist. Please download the file listed above and place it in the project directory. Exiting")
+						Sys.exit(1)
+			except ValueError:
+				continue
+		comments()
+
+if __name__ == "__main__":
+	main()
