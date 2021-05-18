@@ -89,9 +89,9 @@ def video(url, rotations):
 		if title_search.find('"title":{"runs":[{"text":"') >= 0:
 			if title_search.find(title) >= 0:
 				accessible += 1
-				print("[ ✓ ]", end="")
+				print("[✓]", end="")
 			else:
-				print("[ X ]", end="")
+				print("[x]", end="")
 			try:
 				r = get_tor_session().get("https://ip.seeip.org/geoip")
 				r_dict = r.json()
@@ -133,10 +133,10 @@ def comments():
 				with open("temp_comments.json", "r") as json:
 					j = json.read()
 					if j.find(uuid) >= 0:
-						print("[ ✓ ]", end="")
+						print("[✓]", end="")
 						instances += 1
 					else:
-						print("[ X ]", end="")
+						print("[x]", end="")
 						if instances > 0:
 							instances -= 1
 					try:
@@ -152,7 +152,6 @@ def comments():
 				elif instances == 0:
 					print("\nNon-accessible.")
 			attempts += 1
-
 		if attempts == accessible and accessible > 0:
 			print("No abnormal behavior detected. All comments are publicly available.")
 		elif attempts > accessible:
@@ -319,7 +318,7 @@ def main():
 						break
 					except IOError:
 						print("Error: File does not exist. Please download the file listed above and place it in the project directory. Exiting")
-						Sys.exit(1)
+						exit()
 			except ValueError:
 				continue
 		comments()
