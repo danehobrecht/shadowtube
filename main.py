@@ -4,6 +4,7 @@
 
 from __future__ import print_function
 import subprocess
+import itertools, threading
 import argparse
 import socket, shutil
 import time, json, html
@@ -27,7 +28,7 @@ except ImportError:
 
 ### Global variables/Settings
 
-YOUTUBE_VIDEO_URL = "https://www.youtube.com/watch?v={youtubeId}"
+YOUTUBE_VIDEO_URL = "https://www.youtube.com/watch?v={youtube_id}"
 YOUTUBE_COMMENTS_AJAX_URL = "https://www.youtube.com/comment_service_ajax"
 USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36"
 
@@ -58,53 +59,61 @@ def rotate_connection():
 				c.authenticate()
 				c.signal(Signal.NEWNYM)
 	except IncorrectPassword:
-		print("Error: Failed to authenticate. Tor control port password incorrect.")
+		print("Error: Failed to authenticate. Control port password incorrect.")
 		exit()
 	except SocketError:
-		print("Error: Connection refused. Ensure cookie authentication/control port are enabled.")
+		print("Error: Connection refused. Ensure cookie authentication/control port is enabled.")
 		exit()
 
 ### Videos - https://youtu.be/Y6ljFaKRTrI
 
-def video(url, rotations):
+def video(youtube_id):
 	attempts = 0
 	accessible = 0
-	while True:
-		try:
-			page_data = get_tor_session().get(url).text
-			parse_title = str(re.findall('<title>(.*?) - YouTube</title><meta name="title" content=', page_data))
-			title = html.unescape(parse_title.split("'")[1])
-			break
-		except IndexError:
-			rotate_connection()
-	if title == "":
-		print("Video unavailable")
-	else:
-		print("\n" + title)
-	print(url + "\n")
-	while attempts < rotations:
-		rotate_connection()
-		title_query = "https://www.youtube.com/results?search_query=" + "+".join(title.split()).replace('\n', '')
-		title_search = get_tor_session().get(title_query).text
-		if title_search.find('"title":{"runs":[{"text":"') >= 0:
-			if title_search.find(title) >= 0:
-				accessible += 1
-				print("[✓]", end="")
-			else:
-				print("[x]", end="")
+	url = "https://www.youtube.com/watch?v=" + youtube_id
+	try:
+		while True:
 			try:
-				r = get_tor_session().get("https://ip.seeip.org/geoip")
-				r_dict = r.json()
-				print(" " + r_dict["country"] + " (" + r_dict["ip"] + ")")
-			except IOError:
-				print(" Unknown location.")
-			attempts += 1
-	if attempts == accessible and accessible > 0:
-		print("\nNo abnormal behavior.")
-	elif attempts > accessible:
-		print("\nQuestionable behavior.")
-	elif accessible == 0:
-		print("\nAlarming behavior.")
+				page_data = get_tor_session().get(url).text
+				parse_title = str(re.findall('<title>(.*?) - YouTube</title><meta name="title" content=', page_data))
+				title = html.unescape(parse_title.split("'")[1])
+				break
+			except IndexError:
+				rotate_connection()
+		print("")
+		if title == "":
+			print("Video unavailable")
+		else:
+			print(title)
+		print("Interrupt (CTRL+C) to stop the program.\n")
+		while True:
+			rotate_connection()
+			title_query = "https://www.youtube.com/results?search_query=" + "+".join(title.split()).replace('\n', '')
+			title_search = get_tor_session().get(title_query).text
+			if title_search.find('"title":{"runs":[{"text":"') >= 0:
+				if title_search.find(title) >= 0:
+					accessible += 1
+					print("[✓]", end="")
+				else:
+					print("[x]", end="")
+				try:
+					r = get_tor_session().get("https://ip.seeip.org/geoip")
+					r_dict = r.json()
+					print(" " + r_dict["country"] + " (" + r_dict["ip"] + ")")
+				except IOError:
+					print(" Unknown location.")
+				attempts += 1
+	except KeyboardInterrupt:
+		if accessible == 0 and attempts == 0:
+			print("\nInterrupted before granted sufficient time.")
+			exit()
+		elif attempts == accessible and accessible > 0:
+			print("\nNo abnormal behavior - ", end="")
+		elif attempts > accessible:
+			print("\nQuestionable behavior - ", end="")
+		elif accessible == 0 and attempts > 0:
+			print("\nAlarming behavior - ", end="")
+		print(str(accessible) + "/" + str(attempts) + " instance(s) publicly available.")
 
 ### Comments - https://www.youtube.com/feed/history/comment_history
 
@@ -159,13 +168,13 @@ def comments():
 		else:
 			print(str(accessible) + " of " + str(attempts) + " comments publicly available.")
 
-def fetch_comments(youtubeId):
+def fetch_comments(youtube_id):
 	parser = argparse.ArgumentParser()
 	try:
 		args, unknown = parser.parse_known_args()
 		output = "temp_comments.json"
 		limit = 1000
-		if not youtubeId or not output:
+		if not youtube_id or not output:
 			parser.print_usage()
 			raise ValueError('Error: Faulty video I.D.')
 		if os.sep in output:
@@ -173,7 +182,7 @@ def fetch_comments(youtubeId):
 				os.makedirs(outdir)
 		count = 0
 		with io.open(output, 'w', encoding='utf8') as fp:
-			for comment in download_comments(youtubeId):
+			for comment in download_comments(youtube_id):
 				comment_json = json.dumps(comment, ensure_ascii=False)
 				print(comment_json.decode('utf-8') if isinstance(comment_json, bytes) else comment_json, file=fp)
 				count += 1
@@ -198,13 +207,13 @@ def ajax_request(session, url, params=None, data=None, headers=None, retries=5, 
 		else:
 			time.sleep(sleep)
 
-def download_comments(youtubeId, sleep=.1):
+def download_comments(youtube_id, sleep=.1):
 	global private
 	private = bool(False)
 	session = requests.Session()
 	session.headers['User-Agent'] = USER_AGENT
 
-	response = session.get(YOUTUBE_VIDEO_URL.format(youtubeId=youtubeId))
+	response = session.get(YOUTUBE_VIDEO_URL.format(youtube_id=youtube_id))
 	html = response.text
 
 	session_token = find_value(html, 'XSRF_TOKEN', 3)
@@ -276,12 +285,25 @@ def search_dict(partial, search_key):
 ### Init/Menu
 
 def main():
+	os.system('clear')
 	try:
 		get_tor_session().get("http://icanhazip.com").text
 	except IOError:
 		print("A Tor browser instance must be running during script execution to access required services.\n\nExiting.")
 		exit()
-	print("ShadowTube\n\n1. Video\n2. Comments\n3. Dicussion/Community posts (under development)\n")
+	print("""
+  ██████  ██░ ██  ▄▄▄      ▓█████▄  ▒█████   █     █░▄▄▄█████▓ █    ██  ▄▄▄▄   ▓█████ 
+▒██    ▒ ▓██░ ██▒▒████▄    ▒██▀ ██▌▒██▒  ██▒▓█░ █ ░█░▓  ██▒ ▓▒ ██  ▓██▒▓█████▄ ▓█   ▀ 
+░ ▓██▄   ▒██▀▀██░▒██  ▀█▄  ░██   █▌▒██░  ██▒▒█░ █ ░█ ▒ ▓██░ ▒░▓██  ▒██░▒██▒ ▄██▒███   
+  ▒   ██▒░▓█ ░██ ░██▄▄▄▄██ ░▓█▄   ▌▒██   ██░░█░ █ ░█ ░ ▓██▓ ░ ▓▓█  ░██░▒██░█▀  ▒▓█  ▄ 
+▒██████▒▒░▓█▒░██▓ ▓█   ▓██▒░▒████▓ ░ ████▓▒░░░██▒██▓   ▒██▒ ░ ▒▒█████▓ ░▓█  ▀█▓░▒████▒
+▒ ▒▓▒ ▒ ░ ▒ ░░▒░▒ ▒▒   ▓▒█░ ▒▒▓  ▒ ░ ▒░▒░▒░ ░ ▓░▒ ▒    ▒ ░░   ░▒▓▒ ▒ ▒ ░▒▓███▀▒░░ ▒░ ░
+░ ░▒  ░ ░ ▒ ░▒░ ░  ▒   ▒▒ ░ ░ ▒  ▒   ░ ▒ ▒░   ▒ ░ ░      ░    ░░▒░ ░ ░ ▒░▒   ░  ░ ░  ░
+░  ░  ░   ░  ░░ ░  ░   ▒    ░ ░  ░ ░ ░ ░ ▒    ░   ░    ░       ░░░ ░ ░  ░    ░    ░   
+      ░   ░  ░  ░      ░  ░   ░        ░ ░      ░                ░      ░         ░  ░
+                            ░                                                ░        
+				By Dane Hobrecht""")
+	print("\n1. Video\n2. Comments\n")
 	while True:
 		try:
 			choice = int(input("Choose an option: "))
@@ -291,23 +313,14 @@ def main():
 			break
 	if choice == 1:
 		while True:
-			try:
-				url = input("YouTube video URL in question: ")
-				if "https://youtu.be/" in url or "https://www.youtube.com/watch?v=" in url:
-					break
-			except ValueError:
-				continue
-		while True:
-			try:
-				rotations = int(input("Number of locations to try (default & minimum is 5): ") or 5)
-				if rotations >= 1000:
-					print("Input exceeds logical value.")
-					continue
-				if rotations >= 5:
-					break
-			except ValueError:
-				continue
-		video(url, rotations)
+			youtube_id = input("https://www.youtube.com/watch?v=")
+			count = 0
+			for c in youtube_id:
+				if c.isspace() != True:
+					count = count + 1
+			if count == 11:
+				break
+		video(youtube_id)
 	elif choice == 2:
 		while True:
 			try:
