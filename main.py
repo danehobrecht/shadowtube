@@ -24,7 +24,7 @@ try:
 	import socks
 except ImportError:
     print("Some dependencies couldn't be imported (likely not installed).\n\nTo install dependencies, run:\n\tpip3 install -r requirements.txt\n\nExiting.")
-    exit()
+    sys.exit(1)
 
 ### Global variables/Settings
 
@@ -60,10 +60,46 @@ def rotate_connection():
 				c.signal(Signal.NEWNYM)
 	except IncorrectPassword:
 		print("Error: Failed to authenticate. Control port password incorrect.")
-		exit()
+		sys.exit(1)
 	except SocketError:
 		print("Error: Connection refused. Ensure cookie authentication/control port is enabled.")
-		exit()
+		sys.exit(1)
+
+def check_tor():
+	attempts = 0
+	while True:
+		try:
+			get_tor_session().get("http://icanhazip.com").text
+			break
+		except IOError:
+			print("Error: a Tor browser instance must be running during script execution to access required services.")
+			attempts += 1
+			print("Trying again in 10 seconds.")
+			time.sleep(10)
+			if attempts == 10:
+				print("User idle. Exiting.")
+				sys.exit(1)
+
+### Outputs
+
+def geoip():
+	try:
+		r = get_tor_session().get("https://ip.seeip.org/geoip")
+		r_dict = r.json()
+		print(" " + r_dict["country"] + " (" + r_dict["ip"] + ")")
+	except IOError:
+		print(" Unknown location.")
+
+def conclusion():
+	print("")
+	if attempts == 0:
+		print("Interrupted before granted sufficient time.")
+	elif attempts == accessible and accessible > 0:
+		print("No abnormal behavior.")
+	elif attempts > accessible:
+		print("Questionable behavior.")
+	elif accessible == 0 and attempts > 0:
+		print("Alarming behavior.")
 
 ### Videos - https://youtu.be/Y6ljFaKRTrI
 
@@ -72,7 +108,7 @@ def video(youtube_id):
 	accessible = 0
 	url = "https://www.youtube.com/watch?v=" + youtube_id
 	try:
-		while True:
+		for i in range(0, 10, 1):
 			try:
 				page_data = get_tor_session().get(url).text
 				parse_title = str(re.findall('<title>(.*?) - YouTube</title><meta name="title" content=', page_data))
@@ -81,39 +117,25 @@ def video(youtube_id):
 			except IndexError:
 				rotate_connection()
 		print("")
-		if title == "":
-			print("Video unavailable")
-		else:
+		try:
 			print(title)
-		print("Interrupt (CTRL+C) to stop the program.\n")
+			print("Interrupt (CTRL+C) to stop the program.\n")
+		except UnboundLocalError:
+			print("Video unavailable")
 		while True:
 			rotate_connection()
-			title_query = "https://www.youtube.com/results?search_query=" + "+".join(title.split()).replace('\n', '')
-			title_search = get_tor_session().get(title_query).text
-			if title_search.find('"title":{"runs":[{"text":"') >= 0:
-				if title_search.find(title) >= 0:
+			query = get_tor_session().get("https://www.youtube.com/results?search_query=" + "+".join(title.split())).text
+			if query.find('"title":{"runs":[{"text":"') >= 0:
+				if query.find(title) >= 0:
 					accessible += 1
 					print("[✓]", end="")
 				else:
 					print("[x]", end="")
-				try:
-					r = get_tor_session().get("https://ip.seeip.org/geoip")
-					r_dict = r.json()
-					print(" " + r_dict["country"] + " (" + r_dict["ip"] + ")")
-				except IOError:
-					print(" Unknown location.")
+				geoip()
 				attempts += 1
+		conclusion()
 	except KeyboardInterrupt:
-		if accessible == 0 and attempts == 0:
-			print("\nInterrupted before granted sufficient time.")
-			exit()
-		elif attempts == accessible and accessible > 0:
-			print("\nNo abnormal behavior - ", end="")
-		elif attempts > accessible:
-			print("\nQuestionable behavior - ", end="")
-		elif accessible == 0 and attempts > 0:
-			print("\nAlarming behavior - ", end="")
-		print(str(accessible) + "/" + str(attempts) + " instance(s) publicly available.")
+		conclusion()
 
 ### Comments - https://www.youtube.com/feed/history/comment_history
 
@@ -121,52 +143,42 @@ def comments():
 	attempts = 0
 	accessible = 0
 	index = 1
-	with io.open("Google - My Activity.html", "r", encoding = "utf-8") as raw_html:
-		html = raw_html.read().replace("\n", "").replace("'", "`")
-		comments = str(re.findall('<div class="QTGV3c" jsname="r4nke">(.*?)</div><div class="SiEggd">', html))
-		uuids = str(re.findall('data-token="(.*?)" data-date', html))
-		links = str(re.findall('<div class="iXL6O"><a href="(.*?)" jslog="65086; track:click"', html))
-		for i in range(int(links.count("'") / 2)):
-			link = links.split("'")[index]
-			comment = comments.split("'")[index]
-			uuid = uuids.split("'")[index]
-			instances = 0
-			index += 2
-			print('\n"' + comment.replace("`", "'") + '"')
-			print(link + "\n")
-			for i in range(0, 3, 1):
-				rotate_connection()
-				fetch_comments(link.replace("https://www.youtube.com/watch?v=", ""))
-				if private == bool(True):
-					break
-				with open("temp_comments.json", "r") as json:
-					j = json.read()
-					if j.find(uuid) >= 0:
-						print("[✓]", end="")
-						instances += 1
-					else:
-						print("[x]", end="")
-						if instances > 0:
-							instances -= 1
-					try:
-						r = get_tor_session().get("https://ip.seeip.org/geoip")
-						r_dict = r.json()
-						print(" " + r_dict["country"] + " (" + r_dict["ip"] + ")")
-					except IOError:
-						print(" Unknown location.")
-			if private == bool(False):
-				if instances > 0:
-					accessible += 1
-					print("\nAccessible.")
-				elif instances == 0:
-					print("\nNon-accessible.")
-			attempts += 1
-		if attempts == accessible and accessible > 0:
-			print("No abnormal behavior detected. All comments are publicly available.")
-		elif attempts > accessible:
-			print("Questionable behavior in " + str(attempts - accessible) + " comment(s) of " + str(attempts) + " attempted.")
-		else:
-			print(str(accessible) + " of " + str(attempts) + " comments publicly available.")
+	try:
+		with io.open("Google - My Activity.html", "r", encoding = "utf-8") as raw_html:
+			html = raw_html.read().replace("\n", "").replace("'", "`")
+			comment_text_list = str(re.findall('<div class="QTGV3c" jsname="r4nke">(.*?)</div><div class="SiEggd">', html))
+			comment_uuid_list = str(re.findall('data-token="(.*?)" data-date', html))
+			url_list = str(re.findall('<div class="iXL6O"><a href="(.*?)" jslog="65086; track:click"', html))
+			for i in range(int(url_list.count("'") / 2)):
+				comment_text = comment_text_list.split("'")[index]
+				comment_uuid = comment_uuid_list.split("'")[index]
+				url = url_list.split("'")[index]
+				instances = 0
+				index += 2
+				print('\n"' + comment_text.replace("`", "'") + '"')
+				print(url + "\n")
+				for i in range(0, 3, 1):
+					rotate_connection()
+					fetch_comments(url.replace("https://www.youtube.com/watch?v=", ""))
+					if private == bool(True):
+						break
+					with open("temp_comments.json", "r") as json:
+						j = json.read()
+						if j.find(comment_uuid) >= 0:
+							print("[✓]", end="")
+							instances += 1
+						else:
+							print("[x]", end="")
+							if instances > 0:
+								instances -= 1
+					if private == bool(False):
+						if instances == 3:
+							accessible += 1
+						geoip()
+				attempts += 1
+		conclusion()
+	except KeyboardInterrupt:
+		conclusion()
 
 def fetch_comments(youtube_id):
 	parser = argparse.ArgumentParser()
@@ -190,7 +202,7 @@ def fetch_comments(youtube_id):
 					break
 	except Exception as e:
 		print('Error:', str(e))
-		exit()
+		sys.exit(1)
 
 def find_value(html, key, num_chars=2, separator='"'):
 	pos_begin = html.find(key) + len(key) + num_chars
@@ -286,24 +298,8 @@ def search_dict(partial, search_key):
 
 def main():
 	os.system('clear')
-	try:
-		get_tor_session().get("http://icanhazip.com").text
-	except IOError:
-		print("A Tor browser instance must be running during script execution to access required services.\n\nExiting.")
-		exit()
-	print("""
-  ██████  ██░ ██  ▄▄▄      ▓█████▄  ▒█████   █     █░▄▄▄█████▓ █    ██  ▄▄▄▄   ▓█████ 
-▒██    ▒ ▓██░ ██▒▒████▄    ▒██▀ ██▌▒██▒  ██▒▓█░ █ ░█░▓  ██▒ ▓▒ ██  ▓██▒▓█████▄ ▓█   ▀ 
-░ ▓██▄   ▒██▀▀██░▒██  ▀█▄  ░██   █▌▒██░  ██▒▒█░ █ ░█ ▒ ▓██░ ▒░▓██  ▒██░▒██▒ ▄██▒███   
-  ▒   ██▒░▓█ ░██ ░██▄▄▄▄██ ░▓█▄   ▌▒██   ██░░█░ █ ░█ ░ ▓██▓ ░ ▓▓█  ░██░▒██░█▀  ▒▓█  ▄ 
-▒██████▒▒░▓█▒░██▓ ▓█   ▓██▒░▒████▓ ░ ████▓▒░░░██▒██▓   ▒██▒ ░ ▒▒█████▓ ░▓█  ▀█▓░▒████▒
-▒ ▒▓▒ ▒ ░ ▒ ░░▒░▒ ▒▒   ▓▒█░ ▒▒▓  ▒ ░ ▒░▒░▒░ ░ ▓░▒ ▒    ▒ ░░   ░▒▓▒ ▒ ▒ ░▒▓███▀▒░░ ▒░ ░
-░ ░▒  ░ ░ ▒ ░▒░ ░  ▒   ▒▒ ░ ░ ▒  ▒   ░ ▒ ▒░   ▒ ░ ░      ░    ░░▒░ ░ ░ ▒░▒   ░  ░ ░  ░
-░  ░  ░   ░  ░░ ░  ░   ▒    ░ ░  ░ ░ ░ ░ ▒    ░   ░    ░       ░░░ ░ ░  ░    ░    ░   
-      ░   ░  ░  ░      ░  ░   ░        ░ ░      ░                ░      ░         ░  ░
-                            ░                                                ░        
-				By Dane Hobrecht""")
-	print("\n1. Video\n2. Comments\n")
+	check_tor()
+	print("ShadowTube\n\n1. Video\n2. Comments\n")
 	while True:
 		try:
 			choice = int(input("Choose an option: "))
@@ -322,16 +318,16 @@ def main():
 				break
 		video(youtube_id)
 	elif choice == 2:
+		print('Basic HTML data from https://www.youtube.com/feed/history/comment_history\nmust be locally available to the script as "Google - My Activity.html".')
 		while True:
 			try:
-				confirm = str(input('Basic HTML data from https://www.youtube.com/feed/history/comment_history\nmust be locally available to the script as "Google - My Activity.html".\nConfirm? (Y) ') or "y")
+				confirm = str(input("Confirm? (Y) ") or "y")
 				if confirm == "Y" or confirm == "y":
 					try:
 						io.open("Google - My Activity.html", "r")
 						break
 					except IOError:
-						print("Error: File does not exist. Please download the file listed above and place it in the project directory. Exiting")
-						exit()
+						print("Error: File does not exist. Please download the file listed above and place it in the project directory.")
 			except ValueError:
 				continue
 		comments()
