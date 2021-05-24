@@ -1,6 +1,6 @@
 {
-	"use_control_pass": true,
-	"control_pass": "16:518D5E03201EBB9F607A986EAD7CBF01B677D81C78F3D9A813EEB3918F",
+	"use_control_pass": false,
+	"control_pass": "",
 	"control_port": 9151,
 	"socks_port": 9150
 }
