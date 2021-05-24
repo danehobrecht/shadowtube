@@ -90,7 +90,7 @@ def geoip():
 	except IOError:
 		print(" Unknown location.")
 
-def conclusion():
+def conclusion(attempts, accessible):
 	print("")
 	if attempts == 0:
 		print("Interrupted before granted sufficient time.")
@@ -119,9 +119,10 @@ def video(youtube_id):
 		print("")
 		try:
 			print(title)
-			print("Interrupt (CTRL+C) to stop the program.\n")
+			print("Interrupt (CTRL+C) to stop the program\n")
 		except UnboundLocalError:
-			print("Video unavailable")
+			print("Video unavailable.")
+			sys.exit(1)
 		while True:
 			rotate_connection()
 			query = get_tor_session().get("https://www.youtube.com/results?search_query=" + "+".join(title.split())).text
@@ -137,7 +138,8 @@ def video(youtube_id):
 	except KeyboardInterrupt:
 		conclusion()
 
-### Comments - https://www.youtube.com/feed/history/comment_history
+### Comments - https://www.youtube.com/feed/history/comment_history 
+### Non-existent comment url example - https://www.youtube.com/watch?v=OfsojVaqyAA&lc=Ugx5BtG_-N5pwDyvOiF4AaABAg.9NEWMl2CCJR9NI73GZeCDa
 
 def comments():
 	attempts = 0
@@ -152,14 +154,14 @@ def comments():
 			for i in range(int(url_list.count("'") / 2)):
 				comment_text = comment_text_list.split("'")[index]
 				comment_uuid = comment_uuid_list.split("'")[index]
-				url = url_list.split("'")[index]
+				video_url = url_list.split("'")[index]
+				comment_url = video_url + "&lc=" + comment_uuid
 				instances = 0
 				index += 2
 				print('\n"' + comment_text.replace("`", "'") + '"')
-				print(url + "\n")
+				print(video_url + "\n")
 				for i in range(0, 3, 1):
-					rotate_connection()
-					fetch_comments(url.replace("https://www.youtube.com/watch?v=", ""))
+					fetch_comments(video_url.replace("https://www.youtube.com/watch?v=", ""))
 					if private == bool(True):
 						break
 					with open("temp_comments.json", "r") as json:
@@ -171,14 +173,15 @@ def comments():
 							print("[x]", end="")
 							if instances > 0:
 								instances -= 1
-					if private == bool(False):
-						if instances == 3:
-							accessible += 1
 						geoip()
-				attempts += 1
-		conclusion()
+					rotate_connection()
+				if private == bool(False):
+					if instances == 3:
+						accessible += 1
+					attempts += 1
+		conclusion(attempts, accessible)
 	except KeyboardInterrupt:
-		conclusion()
+		conclusion(attempts, accessible)
 
 def fetch_comments(youtube_id):
 	parser = argparse.ArgumentParser()
