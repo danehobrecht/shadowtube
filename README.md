@@ -1,8 +1,7 @@
 # ShadowTube
 Analyzation features:
  - Video links
- - Complete comment history (alpha)
- - "Discussion", or, "Community" posts (under development)
+ - Complete comment history
 ## Setup
 1. Clone the repository and navigate to the directory
 ```
@@ -98,5 +97,6 @@ No abnormal behavior detected. All comments are publicly available.
  - [virtualen](https://pypi.org/project/virtualenv/)
 ## Known compatability issues (subject to change)
  - Video premieres
+ - Live streams
+ - "Discussion", or, "Community" posts
  - Geometric unicode characters in titles
- - Discussion posts
