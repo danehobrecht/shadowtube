@@ -69,12 +69,14 @@ def check_tor():
 	attempts = 0
 	while True:
 		try:
-			get_tor_session().get("http://icanhazip.com").text
+			get_tor_session().get("https://ip.seeip.org")
+			os.system("clear")
 			break
 		except IOError:
-			print("Error: a Tor browser instance must be running during script execution to access required services.")
-			attempts += 1
+			if attempts == 0:
+				print("Error: a Tor browser instance must be running during script execution to access required services.")
 			print("Trying again in 10 seconds.")
+			attempts += 1
 			time.sleep(10)
 			if attempts == 10:
 				print("User idle. Exiting.")
@@ -91,15 +93,14 @@ def geoip():
 		print(" Unknown location.")
 
 def conclusion(attempts, accessible):
-	print("")
 	if attempts == 0:
-		print("Interrupted before granted sufficient time.")
-	elif attempts == accessible and accessible > 0:
-		print("No abnormal behavior.")
-	elif attempts > accessible:
-		print("Questionable behavior.")
+		print("\nInterrupted before granted sufficient time.")
 	elif accessible == 0 and attempts > 0:
-		print("Alarming behavior.")
+		print("\nAlarming behavior.")
+	elif attempts > accessible:
+		print("\nQuestionable behavior.")
+	elif attempts == accessible and attempts > 0:
+		print("\nNo abnormal behavior.")
 
 ### Videos - https://youtu.be/Y6ljFaKRTrI
 
@@ -116,9 +117,8 @@ def video(youtube_id):
 				break
 			except IndexError:
 				rotate_connection()
-		print("")
 		try:
-			print(title)
+			print("\n" + title)
 			print("Interrupt (CTRL+C) to stop the program\n")
 		except UnboundLocalError:
 			print("Video unavailable.")
@@ -134,12 +134,12 @@ def video(youtube_id):
 					print("[x]", end="")
 				geoip()
 				attempts += 1
-		conclusion()
+		conclusion(attempts, accessible)
 	except KeyboardInterrupt:
-		conclusion()
+		conclusion(attempts, accessible)
 
 ### Comments - https://www.youtube.com/feed/history/comment_history 
-### Non-existent comment url example - https://www.youtube.com/watch?v=OfsojVaqyAA&lc=Ugx5BtG_-N5pwDyvOiF4AaABAg.9NEWMl2CCJR9NI73GZeCDa
+### Non-existent comment url template - https://www.youtube.com/watch?v=OfsojVaqyAA&lc=Ugx5BtG_-N5pwDyvOiF4AaABAg.9NEWMl2CCJR9NI73GZeCDa
 
 def comments():
 	attempts = 0
@@ -300,7 +300,7 @@ def search_dict(partial, search_key):
 ### Init/Menu
 
 def main():
-	os.system('clear')
+	os.system("clear")
 	check_tor()
 	print("ShadowTube\n\n1. Video\n2. Comments\n")
 	while True:
@@ -321,10 +321,10 @@ def main():
 				break
 		video(youtube_id)
 	elif choice == 2:
-		print('Basic HTML data from https://www.youtube.com/feed/history/comment_history\nmust be locally available to the script as "Google - My Activity.html".')
+		print('Basic HTML data from https://www.youtube.com/feed/history/comment_history must be locally available to the script as:\n"Google - My Activity.html"')
 		while True:
 			try:
-				confirm = str(input("Confirm? (Y) ") or "y")
+				confirm = input("Confirm? (Y) ") or "y"
 				if confirm == "Y" or confirm == "y":
 					try:
 						io.open("Google - My Activity.html", "r")
