@@ -109,7 +109,7 @@ def video(youtube_id):
 	accessible = 0
 	url = "https://www.youtube.com/watch?v=" + youtube_id
 	try:
-		for i in range(0, 10, 1):
+		while True:
 			try:
 				page_data = get_tor_session().get(url).text
 				parse_title = str(re.findall('<title>(.*?) - YouTube</title><meta name="title" content=', page_data))
@@ -148,25 +148,25 @@ def comments():
 	try:
 		with io.open("Google - My Activity.html", "r", encoding = "utf-8") as raw_html:
 			html = raw_html.read().replace("\n", "").replace("'", "`")
-			comment_text_list = str(re.findall('<div class="QTGV3c" jsname="r4nke">(.*?)</div><div class="SiEggd">', html))
-			comment_uuid_list = str(re.findall('data-token="(.*?)" data-date', html))
+			text_list = str(re.findall('<div class="QTGV3c" jsname="r4nke">(.*?)</div><div class="SiEggd">', html))
+			uuid_list = str(re.findall('data-token="(.*?)" data-date', html))
 			url_list = str(re.findall('<div class="iXL6O"><a href="(.*?)" jslog="65086; track:click"', html))
 			for i in range(int(url_list.count("'") / 2)):
-				comment_text = comment_text_list.split("'")[index]
-				comment_uuid = comment_uuid_list.split("'")[index]
-				video_url = url_list.split("'")[index]
-				comment_url = video_url + "&lc=" + comment_uuid
+				text = text_list.split("'")[index]
+				uuid = uuid_list.split("'")[index]
+				url = url_list.split("'")[index]
+				comment_url = url + "&lc=" + uuid
 				instances = 0
 				index += 2
-				print('\n"' + comment_text.replace("`", "'") + '"')
-				print(video_url + "\n")
+				print('\n"' + text.replace("`", "'") + '"')
+				print(url + "\n")
 				for i in range(0, 3, 1):
-					fetch_comments(video_url.replace("https://www.youtube.com/watch?v=", ""))
+					fetch_comments(url.replace("https://www.youtube.com/watch?v=", ""))
 					if private == bool(True):
 						break
-					with open("temp_comments.json", "r") as json:
+					with open("temp.json", "r") as json:
 						j = json.read()
-						if j.find(comment_uuid) >= 0:
+						if j.find(uuid) >= 0:
 							print("[✓]", end="")
 							instances += 1
 						else:
@@ -187,7 +187,7 @@ def fetch_comments(youtube_id):
 	parser = argparse.ArgumentParser()
 	try:
 		args, unknown = parser.parse_known_args()
-		output = "temp_comments.json"
+		output = "temp.json"
 		limit = 1000
 		if not youtube_id or not output:
 			parser.print_usage()
