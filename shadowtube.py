@@ -74,7 +74,7 @@ def check_tor():
 			break
 		except IOError:
 			if attempts == 0:
-				print("Error: a Tor browser instance must be running during script execution to access required services.")
+				print("Error: failed reaching Tor service.")
 			print("Trying again in 10 seconds.")
 			attempts += 1
 			time.sleep(10)
@@ -88,9 +88,9 @@ def geoip():
 	try:
 		r = get_tor_session().get("https://ip.seeip.org/geoip")
 		r_dict = r.json()
-		print(" " + r_dict["country"] + " (" + r_dict["ip"] + ")")
+		print(r_dict["country"] + " — " + r_dict["ip"])
 	except IOError:
-		print(" Unknown location.")
+		print("Unknown")
 
 def conclusion(attempts, accessible):
 	if attempts == 0:
@@ -117,21 +117,20 @@ def video(youtube_id):
 				break
 			except IndexError:
 				rotate_connection()
-		try:
+		if title == "":
+			print("\nPrivate video")
+		else:
 			print("\n" + title)
-			print("Interrupt (CTRL+C) to stop the program\n")
-		except UnboundLocalError:
-			print("Video unavailable.")
-			sys.exit(1)
+		print("Interrupt (CTRL+C) to stop the program\n")
 		while True:
 			rotate_connection()
 			query = get_tor_session().get("https://www.youtube.com/results?search_query=" + "+".join(title.split())).text
 			if query.find('"title":{"runs":[{"text":"') >= 0:
 				if query.find(title) >= 0:
 					accessible += 1
-					print("[✓]", end="")
+					print("[✓]", end=" ")
 				else:
-					print("[x]", end="")
+					print("[x]", end=" ")
 				geoip()
 				attempts += 1
 		conclusion(attempts, accessible)
@@ -244,8 +243,8 @@ def download_comments(youtube_id, sleep=.1):
 			private = bool(False)
 			return
 	except UnboundLocalError:
-		private = bool(True	)
-		print("Video unavailable.")
+		private = bool(True)
+		print("Private video")
 		return
 	continuations = [(ncd['continuation'], ncd['clickTrackingParams'], 'action_get_comments')]
 	while continuations:
@@ -300,17 +299,14 @@ def search_dict(partial, search_key):
 ### Init/Menu
 
 def main():
+	parser = argparse.ArgumentParser(description="calculate X to the power of Y")
+	group = parser.add_mutually_exclusive_group()
+	group.add_argument("-v", "--video", help="url-based video analyzation", action="store_true")
+	group.add_argument("-c", "--comments", help="analyze locally available comment history", action="store_true")
+	args = parser.parse_args()
 	os.system("clear")
 	check_tor()
-	print("ShadowTube\n\n1. Video\n2. Comments\n")
-	while True:
-		try:
-			choice = int(input("Choose an option: "))
-		except ValueError:
-			continue
-		if choice in (1, 2):
-			break
-	if choice == 1:
+	if args.video:
 		while True:
 			youtube_id = input("https://www.youtube.com/watch?v=")
 			count = 0
@@ -318,9 +314,9 @@ def main():
 				if c.isspace() != True:
 					count = count + 1
 			if count == 11:
-				break
+				breaks
 		video(youtube_id)
-	elif choice == 2:
+	if args.comments:
 		print('Basic HTML data from https://www.youtube.com/feed/history/comment_history must be locally available to the script as:\n"Google - My Activity.html"')
 		while True:
 			try:

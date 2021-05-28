@@ -3,3 +3,4 @@ PySocks
 cssselect
 lxml
 stem
+argparse
