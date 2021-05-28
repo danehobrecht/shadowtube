@@ -15,7 +15,7 @@ pip3 install -r requirements.txt
 4. Launch an instance of Tor Browser
 5. Run 
 ```
-python3 main.py
+python3 shadowtube.py
 ```
 ## Configure torrc
 1. Hash a custom control password

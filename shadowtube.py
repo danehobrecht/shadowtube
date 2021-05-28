@@ -299,7 +299,7 @@ def search_dict(partial, search_key):
 ### Init/Menu
 
 def main():
-	parser = argparse.ArgumentParser(description="calculate X to the power of Y")
+	parser = argparse.ArgumentParser(description="A YouTube shadowban detection program.")
 	group = parser.add_mutually_exclusive_group()
 	group.add_argument("-v", "--video", help="url-based video analyzation", action="store_true")
 	group.add_argument("-c", "--comments", help="analyze locally available comment history", action="store_true")
@@ -314,9 +314,9 @@ def main():
 				if c.isspace() != True:
 					count = count + 1
 			if count == 11:
-				breaks
+				break
 		video(youtube_id)
-	if args.comments:
+	elif args.comments:
 		print('Basic HTML data from https://www.youtube.com/feed/history/comment_history must be locally available to the script as:\n"Google - My Activity.html"')
 		while True:
 			try:
@@ -330,6 +330,8 @@ def main():
 			except ValueError:
 				continue
 		comments()
+	else:
+		print("Run `python3 shadowtube.py -h` for instructions on how to run the program.")
 
 if __name__ == "__main__":
 	main()
