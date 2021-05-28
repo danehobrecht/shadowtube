@@ -70,7 +70,6 @@ def check_tor():
 	while True:
 		try:
 			get_tor_session().get("https://ip.seeip.org")
-			os.system("clear")
 			break
 		except IOError:
 			if attempts == 0:
@@ -304,9 +303,9 @@ def main():
 	group.add_argument("-v", "--video", help="url-based video analyzation", action="store_true")
 	group.add_argument("-c", "--comments", help="analyze locally available comment history", action="store_true")
 	args = parser.parse_args()
-	os.system("clear")
 	check_tor()
 	if args.video:
+		os.system("clear")
 		while True:
 			youtube_id = input("https://www.youtube.com/watch?v=")
 			count = 0
@@ -317,6 +316,7 @@ def main():
 				break
 		video(youtube_id)
 	elif args.comments:
+		os.system("clear")
 		print('The basic HTML page file from https://www.youtube.com/feed/history/comment_history must be locally available to the script as "Google - My Activity.html"')
 		while True:
 			try:
