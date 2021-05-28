@@ -13,7 +13,7 @@ pip3 install -r requirements.txt
 ```
 3. [Configure torrc](#configure-torrc) (optional)
 4. Launch an instance of Tor Browser
-5. Run 
+5. Execute 
 ```
 python3 shadowtube.py
 ```
@@ -53,11 +53,11 @@ This step limits connection only to the local loopback address, effectively limi
 "Me at the zoo"
 https://www.youtube.com/watch?v=jNQXAC9IVRw
 
-[✓] United States (199.249.230.78)
-[✓] Republic of Moldova (178.17.174.164)
-[✓] Ukraine (193.218.118.183)
-[✓] Seychelles (37.228.129.5)
-[✓] United States (199.249.230.158)
+[✓] United States — 199.249.230.78
+[✓] Republic of Moldova — 178.17.174.164
+[✓] Ukraine — 193.218.118.183
+[✓] Seychelles — 37.228.129.5
+[✓] United States — 199.249.230.158
 
 No abnormal behavior detected.
 ```
@@ -65,29 +65,23 @@ No abnormal behavior detected.
 "Super clever, really like the use of chickens. The smaller scale interpretations seem to be popular as opposed to som..."
 https://www.youtube.com/watch?v=Drx1DEXa0GM
 
-Accessible in Germany (185.220.102.8)
-Accessible in Seychelles (37.228.129.5)
-Accessible in Germany (185.220.101.213)
-
-[✓]
+[✓] Germany — 185.220.102.8
+[✓] Seychelles — 37.228.129.5
+[✓] Germany — 185.220.101.213
 
 "This is good work. Feel your pain with the beatmap conversion."
 https://www.youtube.com/watch?v=nWfF8wj19yk
 
-Accessible in Germany (185.220.100.249)
-Accessible from an unknown location.
-Accessible in Austria (109.70.100.50)
-
-[✓]
+[✓] Germany — 185.220.100.249
+[✓] Unknown
+[✓] Austria — 109.70.100.50
 
 "Doesn't look like failing to me. Glad you enjoyed the map."
 https://www.youtube.com/watch?v=e_pyT5yFuYY
 
-Accessible in Switzerland (176.10.104.240)
-Accessible in Germany (185.220.101.144)
-Accessible in China (23.154.177.131)
-
-[✓]
+[✓] Switzerland — 176.10.104.240
+[✓] Germany — 185.220.101.144
+[✓] China — 23.154.177.131
 
 No abnormal behavior detected. All comments are publicly available.
 ```

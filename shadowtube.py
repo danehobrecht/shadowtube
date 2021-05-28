@@ -166,10 +166,10 @@ def comments():
 					with open("temp.json", "r") as json:
 						j = json.read()
 						if j.find(uuid) >= 0:
-							print("[✓]", end="")
+							print("[✓]", end=" ")
 							instances += 1
 						else:
-							print("[x]", end="")
+							print("[x]", end=" ")
 							if instances > 0:
 								instances -= 1
 						geoip()
@@ -317,7 +317,7 @@ def main():
 				break
 		video(youtube_id)
 	elif args.comments:
-		print('Basic HTML data from https://www.youtube.com/feed/history/comment_history must be locally available to the script as:\n"Google - My Activity.html"')
+		print('The basic HTML page file from https://www.youtube.com/feed/history/comment_history must be locally available to the script as "Google - My Activity.html"')
 		while True:
 			try:
 				confirm = input("Confirm? (Y) ") or "y"
@@ -331,7 +331,7 @@ def main():
 				continue
 		comments()
 	else:
-		print("Run `python3 shadowtube.py -h` for instructions on how to run the program.")
+		print("Run `python3 shadowtube.py -h` to list arguments.")
 
 if __name__ == "__main__":
 	main()
