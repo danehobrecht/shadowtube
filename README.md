@@ -83,7 +83,7 @@ https://www.youtube.com/watch?v=e_pyT5yFuYY
 [✓] Germany — 185.220.101.144
 [✓] China — 23.154.177.131
 
-No abnormal behavior detected. All comments are publicly available.
+No abnormal behavior detected.
 ```
 ## Prerequisites
  - [Python 3.7.3+ & pip3](https://www.python.org/downloads/)

@@ -23,7 +23,7 @@ try:
 	import socket
 	import socks
 except ImportError:
-    print("Some dependencies couldn't be imported (likely not installed).\n\nTo install dependencies, run:\n\tpip3 install -r requirements.txt\n\nExiting.")
+    print("Run `pip3 install -r requirements.txt` to install dependencies.")
     sys.exit(1)
 
 ### Global variables/Settings
@@ -300,7 +300,7 @@ def search_dict(partial, search_key):
 def main():
 	parser = argparse.ArgumentParser(description="A YouTube shadowban detection program.")
 	group = parser.add_mutually_exclusive_group()
-	group.add_argument("-v", "--video", help="url-based video analyzation", action="store_true")
+	group.add_argument("-v", "--video", help="analyze individual video URLs", action="store_true")
 	group.add_argument("-c", "--comments", help="analyze locally available comment history", action="store_true")
 	args = parser.parse_args()
 	check_tor()
@@ -317,7 +317,7 @@ def main():
 		video(youtube_id)
 	elif args.comments:
 		os.system("clear")
-		print('The basic HTML page file from https://www.youtube.com/feed/history/comment_history must be locally available to the script as "Google - My Activity.html"')
+		print('The basic HTML page file from https://www.youtube.com/feed/history/comment_history must be locally available to the scrip-\nt as "Google - My Activity.html"')
 		while True:
 			try:
 				confirm = input("Confirm? (Y) ") or "y"
@@ -331,7 +331,7 @@ def main():
 				continue
 		comments()
 	else:
-		print("Run `python3 shadowtube.py -h` to list arguments.")
+		print("Run `python3 shadowtube.py -h` to list argumental options.")
 
 if __name__ == "__main__":
 	main()
