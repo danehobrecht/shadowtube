@@ -73,7 +73,7 @@ def check_tor():
 			break
 		except IOError:
 			if attempts == 0:
-				print("Error: failed reaching Tor service.")
+				print("Error: failed to reach Tor service.")
 			print("Trying again in 10 seconds.")
 			attempts += 1
 			time.sleep(10)
@@ -313,6 +313,7 @@ def main():
 				if c.isspace() != True:
 					count = count + 1
 			if count == 11:
+				response = get_tor_session().get("https://www.youtube.com/watch?v=" + youtube_id)
 				break
 		video(youtube_id)
 	elif args.comments:
