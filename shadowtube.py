@@ -63,7 +63,7 @@ def rotate_connection():
 		sys.exit(1)
 	except SocketError:
 		print("Error: Connection refused. Ensure cookie authentication/control port is enabled.")
-		sys.exit(1)
+		sys.exit(1)	
 
 def check_tor():
 	attempts = 0
@@ -318,7 +318,7 @@ def main():
 		video(youtube_id)
 	elif args.comments:
 		os.system("clear")
-		print('The basic HTML page file from https://www.youtube.com/feed/history/comment_history must be locally available to the scrip-\nt as "Google - My Activity.html"')
+		print('The basic HTML page file from https://www.youtube.com/feed/history/comment_history must be locally available to the script as "Google - My Activity.html"')
 		while True:
 			try:
 				confirm = input("Confirm? (Y) ") or "y"
