@@ -63,23 +63,7 @@ def rotate_connection():
 		sys.exit(1)
 	except SocketError:
 		print("Error: Connection refused. Ensure cookie authentication/control port is enabled.")
-		sys.exit(1)	
-
-def check_tor():
-	attempts = 0
-	while True:
-		try:
-			get_tor_session().get("https://ip.seeip.org")
-			break
-		except IOError:
-			if attempts == 0:
-				print("Error: failed to reach Tor service.")
-			print("Trying again in 10 seconds.")
-			attempts += 1
-			time.sleep(10)
-			if attempts == 10:
-				print("User idle. Exiting.")
-				sys.exit(1)
+		sys.exit(1)
 
 ### Outputs
 
@@ -303,7 +287,20 @@ def main():
 	group.add_argument("-v", "--video", help="analyze individual video URLs", action="store_true")
 	group.add_argument("-c", "--comments", help="analyze locally available comment history", action="store_true")
 	args = parser.parse_args()
-	check_tor()
+	attempts = 0
+	while True:
+		try:
+			get_tor_session().get("https://ip.seeip.org")
+			break
+		except IOError:
+			if attempts == 0:
+				print("Error: failed to reach Tor service.")
+			print("Trying again in 10 seconds.")
+			attempts += 1
+			time.sleep(10)
+			if attempts == 10:
+				print("User idle. Exiting.")
+				sys.exit(1)
 	if args.video:
 		os.system("clear")
 		while True:
