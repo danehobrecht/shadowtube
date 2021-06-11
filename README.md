@@ -5,7 +5,7 @@ Analyzation features:
 ## Setup
 1. Clone the repository and navigate to the directory
 ```
-git clone https://github.com/danehobrecht/shadowtube.git && cd shadowtube
+git clone https://github.com/tmuq/shadowtube.git && cd shadowtube
 ```
 2. Install dependencies
 ```
