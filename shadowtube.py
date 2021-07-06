@@ -104,7 +104,7 @@ def video(youtube_id):
 			print("\nPrivate video")
 		else:
 			print("\n" + title)
-		print("Interrupt (CTRL+C) to stop the program\n")
+		print("Interrupt (CTRL+C) to conclude the session\n")
 		while True:
 			rotate_connection()
 			query = get_tor_session().get("https://www.youtube.com/results?search_query=" + "+".join(title.split())).text
