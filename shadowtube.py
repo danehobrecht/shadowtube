@@ -85,7 +85,7 @@ def conclusion(attempts, accessible):
 	elif attempts == accessible and attempts > 0:
 		print("\nNo abnormal behavior.")
 
-### Videos - https://youtu.be/Y6ljFaKRTrI
+### Videos - https://www.youtube.com/watch?v=Y6ljFaKRTrI
 
 def video(youtube_id):
 	attempts = 0
@@ -121,7 +121,7 @@ def video(youtube_id):
 		conclusion(attempts, accessible)
 
 ### Comments - https://www.youtube.com/feed/history/comment_history 
-### Non-existent comment url template - https://www.youtube.com/watch?v=OfsojVaqyAA&lc=Ugx5BtG_-N5pwDyvOiF4AaABAg.9NEWMl2CCJR9NI73GZeCDa
+### Comment url template (removed) - https://www.youtube.com/watch?v=OfsojVaqyAA&lc=Ugx5BtG_-N5pwDyvOiF4AaABAg.9NEWMl2CCJR9NI73GZeCDa
 
 def comments():
 	attempts = 0
