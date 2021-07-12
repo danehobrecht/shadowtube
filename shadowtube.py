@@ -120,7 +120,7 @@ def video(youtube_id):
 	except KeyboardInterrupt:
 		conclusion(attempts, accessible)
 
-### Comments - https://www.youtube.com/feed/history/comment_history 
+### Comments - https://www.youtube.com/feed/history/comment_history
 ### Comment url template (removed) - https://www.youtube.com/watch?v=OfsojVaqyAA&lc=Ugx5BtG_-N5pwDyvOiF4AaABAg.9NEWMl2CCJR9NI73GZeCDa
 
 def comments():
