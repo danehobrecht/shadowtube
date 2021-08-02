@@ -295,11 +295,11 @@ def main():
 		except IOError:
 			if attempts == 0:
 				print("Error: failed to reach Tor service.")
-			print("Trying again in 10 seconds.")
+			print("Trying again in 5 seconds.")
 			attempts += 1
-			time.sleep(10)
+			time.sleep(1)
 			if attempts == 10:
-				print("User idle. Exiting.")
+				print("Error: User idle. Exiting.")
 				sys.exit(1)
 	if args.video:
 		os.system("clear")
@@ -315,7 +315,7 @@ def main():
 		video(youtube_id)
 	elif args.comments:
 		os.system("clear")
-		print('The basic HTML page file from https://www.youtube.com/feed/history/comment_history must be locally available to the script as "Google - My Activity.html"')
+		print('The basic HTML page file of https://www.youtube.com/feed/history/comment_history must be locally available to the script as "Google - My Activity.html"')
 		while True:
 			try:
 				confirm = input("Confirm? (Y) ") or "y"
