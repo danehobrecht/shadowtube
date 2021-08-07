@@ -310,6 +310,7 @@ def main():
 	if args.video:
 		check_tor()
 		while True:
+			print("Complete video URL in question.\n")
 			youtube_id = input("https://www.youtube.com/watch?v=")
 			count = 0
 			for c in youtube_id:
