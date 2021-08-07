@@ -65,6 +65,24 @@ def rotate_connection():
 		print("Error: Connection refused. Ensure cookie authentication/control port is enabled.")
 		sys.exit(1)
 
+def check_tor():
+	attempts = 0
+	print("Reaching for Tor service...")
+	while True:
+		try:
+			get_tor_session().get("https://ip.seeip.org")
+			print("Successful.")
+			time.sleep(1)
+			break
+		except IOError:
+			print("Failed.")
+			print("Trying again in 5 seconds.")
+			attempts += 1
+			time.sleep(5)
+			if attempts == 10:
+				print("Error: User idle. Exiting.")
+				sys.exit(1)
+
 ### Outputs
 
 def geoip():
@@ -279,7 +297,7 @@ def search_dict(partial, search_key):
 			for value in current_item:
 				stack.append(value)
 
-### Init/Menu
+### Init
 
 def main():
 	parser = argparse.ArgumentParser(description="A YouTube shadowban detection program.")
@@ -287,21 +305,8 @@ def main():
 	group.add_argument("-v", "--video", help="analyze individual video URLs", action="store_true")
 	group.add_argument("-c", "--comments", help="analyze locally available comment history", action="store_true")
 	args = parser.parse_args()
-	attempts = 0
-	while True:
-		try:
-			get_tor_session().get("https://ip.seeip.org")
-			break
-		except IOError:
-			if attempts == 0:
-				print("Error: failed to reach Tor service.")
-			print("Trying again in 5 seconds.")
-			attempts += 1
-			time.sleep(1)
-			if attempts == 10:
-				print("Error: User idle. Exiting.")
-				sys.exit(1)
 	if args.video:
+		check_tor()
 		os.system("clear")
 		while True:
 			youtube_id = input("https://www.youtube.com/watch?v=")
@@ -312,10 +317,13 @@ def main():
 			if count == 11:
 				response = get_tor_session().get("https://www.youtube.com/watch?v=" + youtube_id)
 				break
+			else:
+				os.system("clear")
 		video(youtube_id)
 	elif args.comments:
+		check_tor()
 		os.system("clear")
-		print('The basic HTML page file of https://www.youtube.com/feed/history/comment_history must be locally available to the script as "Google - My Activity.html"')
+		print('The basic HTML page file of https://www.youtube.com/feed/history/comment_history must be locally available to the script as "Google - My Activity.html".')
 		while True:
 			try:
 				confirm = input("Confirm? (Y) ") or "y"
@@ -329,7 +337,7 @@ def main():
 				continue
 		comments()
 	else:
-		print("Run `python3 shadowtube.py -h` to list argumental options.")
-
+		os.system("python3 shadowtube.py -h")
+		
 if __name__ == "__main__":
 	main()
