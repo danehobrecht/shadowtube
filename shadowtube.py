@@ -73,6 +73,7 @@ def check_tor():
 			get_tor_session().get("https://ip.seeip.org")
 			print("Successful.")
 			time.sleep(1)
+			os.system("clear")
 			break
 		except IOError:
 			print("Failed.")
@@ -122,7 +123,7 @@ def video(youtube_id):
 			print("\nPrivate video")
 		else:
 			print("\n" + title)
-		print("Interrupt (CTRL+C) to conclude the session\n")
+		print("Interrupt (CTRL+C) to conclude this session\n")
 		while True:
 			rotate_connection()
 			query = get_tor_session().get("https://www.youtube.com/results?search_query=" + "+".join(title.split())).text
@@ -145,6 +146,7 @@ def comments():
 	attempts = 0
 	accessible = 0
 	index = 1
+	print("\nInterrupt (CTRL+C) to conclude this session\n")
 	try:
 		with io.open("Google - My Activity.html", "r", encoding = "utf-8") as raw_html:
 			html = raw_html.read().replace("\n", "").replace("'", "`")
@@ -158,7 +160,7 @@ def comments():
 				comment_url = url + "&lc=" + uuid
 				instances = 0
 				index += 2
-				print('\n"' + text.replace("`", "'") + '"')
+				print('"' +text.replace("`", "'") + '"')
 				print(url + "\n")
 				for i in range(0, 3, 1):
 					fetch_comments(url.replace("https://www.youtube.com/watch?v=", ""))
@@ -307,7 +309,6 @@ def main():
 	args = parser.parse_args()
 	if args.video:
 		check_tor()
-		os.system("clear")
 		while True:
 			youtube_id = input("https://www.youtube.com/watch?v=")
 			count = 0
@@ -322,17 +323,18 @@ def main():
 		video(youtube_id)
 	elif args.comments:
 		check_tor()
-		os.system("clear")
-		print('The basic HTML page file of https://www.youtube.com/feed/history/comment_history must be locally available to the script as "Google - My Activity.html".')
 		while True:
 			try:
-				confirm = input("Confirm? (Y) ") or "y"
+				print('The basic HTML page file of https://www.youtube.com/feed/history/comment_history must be locally available to the script as "Google - My Activity.html".')
+				confirm = input("Confirm? (Y) ")
 				if confirm == "Y" or confirm == "y":
 					try:
 						io.open("Google - My Activity.html", "r")
 						break
 					except IOError:
 						print("Error: File does not exist. Please download the file listed above and place it in the project directory.")
+				else:
+					os.system("clear")
 			except ValueError:
 				continue
 		comments()
