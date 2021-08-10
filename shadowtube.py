@@ -3,9 +3,7 @@
 ### Dependencies
 
 from __future__ import print_function
-import subprocess
 import itertools, threading
-import argparse
 import socket, shutil
 import time, json, html
 import sys
@@ -20,6 +18,7 @@ try:
 	from stem import SocketError
 	import lxml.html
 	import requests
+	import argparse
 	import socket
 	import socks
 except ImportError:
@@ -84,7 +83,7 @@ def check_tor():
 				print("Error: User idle. Exiting.")
 				sys.exit(1)
 
-### Outputs
+### Output
 
 def geoip():
 	try:
@@ -104,7 +103,7 @@ def conclusion(attempts, accessible):
 	elif attempts == accessible and attempts > 0:
 		print("\nNo abnormal behavior.")
 
-### Videos - https://www.youtube.com/watch?v=Y6ljFaKRTrI
+### Video - https://www.youtube.com/watch?v=Y6ljFaKRTrI
 
 def video(youtube_id):
 	attempts = 0
@@ -334,6 +333,9 @@ def main():
 						break
 					except IOError:
 						print("Error: File does not exist. Please download the file listed above and place it in the project directory.")
+				elif confirm == "N" or confirm == "n":
+					print("Exiting.")
+					sys.exit(1)
 				else:
 					os.system("clear")
 			except ValueError:
