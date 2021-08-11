@@ -145,7 +145,7 @@ def comments():
 	attempts = 0
 	accessible = 0
 	index = 1
-	print("\nInterrupt (CTRL+C) to conclude this session\n")
+	print("\nInterrupt (CTRL+C) to conclude this session")
 	try:
 		with io.open("Google - My Activity.html", "r", encoding = "utf-8") as raw_html:
 			html = raw_html.read().replace("\n", "").replace("'", "`")
@@ -159,7 +159,7 @@ def comments():
 				comment_url = url + "&lc=" + uuid
 				instances = 0
 				index += 2
-				print('"' +text.replace("`", "'") + '"')
+				print('\n"' +text.replace("`", "'") + '"')
 				print(url + "\n")
 				for i in range(0, 3, 1):
 					fetch_comments(url.replace("https://www.youtube.com/watch?v=", ""))
