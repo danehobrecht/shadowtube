@@ -326,7 +326,7 @@ def main():
 		check_tor()
 		while True:
 			try:
-				print('The basic HTML page file of https://www.youtube.com/feed/history/comment_history must be locally available to the script as "Google - My Activity.html".')
+				print('The basic HTML page data from https://www.youtube.com/feed/history/comment_history must be locally available to the script as "Google - My Activity.html"\n')
 				confirm = input("Confirm? (Y) ")
 				if confirm == "Y" or confirm == "y":
 					try:
