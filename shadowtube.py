@@ -66,12 +66,12 @@ def rotate_connection():
 
 def check_tor():
 	attempts = 0
-	print("Reaching for Tor service...")
+	print("Reaching Tor service...")
 	while True:
 		try:
 			get_tor_session().get("https://ip.seeip.org")
 			print("Successful.")
-			time.sleep(1)
+			time.sleep(1.2)
 			os.system("clear")
 			break
 		except IOError:
@@ -95,13 +95,13 @@ def geoip():
 
 def conclusion(attempts, accessible):
 	if attempts == 0:
-		print("\nInterrupted before granted sufficient time.")
+		print("\nInterrupted before granted sufficient time")
 	elif accessible == 0 and attempts > 0:
-		print("\nAlarming behavior.")
+		print("\nAlarming behavior detected")
 	elif attempts > accessible:
-		print("\nQuestionable behavior.")
+		print("\nQuestionable behavior detected")
 	elif attempts == accessible and attempts > 0:
-		print("\nNo abnormal behavior.")
+		print("\nNo abnormal behavior detected")
 
 ### Video - https://www.youtube.com/watch?v=Y6ljFaKRTrI
 
@@ -119,10 +119,11 @@ def video(youtube_id):
 			except IndexError:
 				rotate_connection()
 		if title == "":
-			print("\nPrivate video")
+			print("\nVideo unavailable")
+			sys.exit(1)
 		else:
 			print("\n" + title)
-		print("Interrupt (CTRL+C) to conclude this session\n")
+		print("Interrupt (CTRL+C) to conclude the session\n")
 		while True:
 			rotate_connection()
 			query = get_tor_session().get("https://www.youtube.com/results?search_query=" + "+".join(title.split())).text
@@ -145,7 +146,7 @@ def comments():
 	attempts = 0
 	accessible = 0
 	index = 1
-	print("\nInterrupt (CTRL+C) to conclude this session")
+	print("\nInterrupt (CTRL+C) to conclude the session")
 	try:
 		with io.open("Google - My Activity.html", "r", encoding = "utf-8") as raw_html:
 			html = raw_html.read().replace("\n", "").replace("'", "`")
@@ -309,7 +310,7 @@ def main():
 	if args.video:
 		check_tor()
 		while True:
-			print("Complete video URL in question.\n")
+			print("Complete the video URL in question\n")
 			youtube_id = input("https://www.youtube.com/watch?v=")
 			count = 0
 			for c in youtube_id:
