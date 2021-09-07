@@ -59,7 +59,7 @@ https://www.youtube.com/watch?v=jNQXAC9IVRw
 [✓] Seychelles — 37.228.129.5
 [✓] United States — 199.249.230.158
 
-No abnormal behavior detected.
+No abnormal behavior detected
 ```
 ```
 "Super clever, really like the use of chickens. The smaller scale interpretations seem to be popular as opposed to som..."
@@ -83,7 +83,7 @@ https://www.youtube.com/watch?v=e_pyT5yFuYY
 [✓] Germany — 185.220.101.144
 [✓] China — 23.154.177.131
 
-No abnormal behavior detected.
+No abnormal behavior detected
 ```
 ## Prerequisites
  - [Python 3.7.3+ & pip3](https://www.python.org/downloads/)
