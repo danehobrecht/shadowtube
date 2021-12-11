@@ -22,8 +22,8 @@ try:
 	import socket
 	import socks
 except ImportError:
-    print("Run `pip3 install -r requirements.txt` to install dependencies.")
-    sys.exit(1)
+	print("Run `pip3 install -r requirements.txt` to install dependencies.")
+	sys.exit(1)
 
 ### Global variables/Settings
 
@@ -75,7 +75,7 @@ def tor_validate():
 			os.system("clear")
 			break
 		except IOError:
-			print("Error: Failed to reach Tor. Trying again in 5 seconds.")
+			print("Error: Failed to establish conection. Trying again in 5 seconds.")
 			att += 1
 			time.sleep(5)
 			if att == 10:
