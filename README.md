@@ -24,7 +24,7 @@ tor --hash-password <password>
 ```
 2. Open `torrc` with elevated privelages
 ```
-sudo nano /etc/tor/torrc
+nano /etc/tor/torrc
 ```
 3. Append the hashed password to `HashedControlPassword` and uncomment `ControlPort`
 ```
