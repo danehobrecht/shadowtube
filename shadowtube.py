@@ -171,7 +171,7 @@ def comments_init():
 							print("[✓]", end=" ")
 							ins += 1
 						else:
-							print("[x]", end=" ")
+							print("[X]", end=" ")
 							if ins > 0:
 								ins -= 1
 						out_geoip()
