@@ -1,22 +1,22 @@
 # ShadowTube
-![preview](https://github.com/danehobrecht/shadowtu-be/blob/main/static/images/shadowtube.png)
+![preview](https://github.com/danehobrecht/shadowtube/blob/main/static/images/shadowtube.png)
 Analyzation features:
  - Video links
  - Complete comment history
-## Setup
+## Local setup
 1. Clone the repository and navigate to the directory
 ```
-git clone https://github.com/danehobrecht/shadowtube.git && cd shadowtube
+git clone https://github.com/danehobrecht/shadowtube.git && cd shadowtube/server/src
 ```
 2. Install dependencies
 ```
-pip3 install -r requirements.txt
+pip install -r requests flask gunicorn pysocks cssselect lxml stem
 ```
 3. [Configure torrc](#configure-torrc) (optional)
 4. Launch an instance of Tor Browser
-5. Execute 
+5. Execute
 ```
-python3 shadowtube.py
+python3 main.py
 ```
 ## Configure torrc
 1. Hash a custom control password
@@ -39,7 +39,7 @@ HashedControlPassword 16:872860B76453A77D60CA2BB8C1A7042072093276A3D701AD684053E
 #CookieAuthentication 1
 ...
 ```
-### Additional security steps
+### Security steps
 To prevent unauthorized users from accessing `tor`, consider adding the following steps:
 - Change your SOCKS5 and control ports to a port not commonly used
 - **Important for users using cookie authentication**: Append the following lines to `torrc`
@@ -86,57 +86,12 @@ https://www.youtube.com/watch?v=e_pyT5yFuYY
 
 No abnormal behavior detected
 ```
-## Prerequisites
- - [Python 3.7.3+ & pip3](https://www.python.org/downloads/)
+## Program prerequisites
+ - [Python 3.7.3+ & pip](https://www.python.org/downloads/)
  - [Tor Browser](https://www.torproject.org/)
- - [virtualenv](https://pypi.org/project/virtualenv/)
-## Known compatability issues (subject to change)
+ - [venv](https://docs.python.org/3/library/venv.html)
+## Known issues
  - Video premieres
  - Live streams
  - "Discussion", or, "Community" posts
  - Geometric unicode characters in titles
-
-
-### Self-host
-#### GNU/Linux, MacOS
-1. Download the zip and create a virtual environment named "venv" in the extracted directory
-```
-python3 -m venv /path/to/shadowtube/venv
-```
-2. Navigate to directory
-```
-cd /path/to/shadowtube
-```
-3. Install dependencies
-```
-pip3 install -r requirements.txt --no-warn-script-location
-```
-4. Establish "app.py"
-```
-export FLASK_APP=app.py
-```
-5. Run
-```
-python3 -m flask run
-```
-#### Windows
-1. Download the zip and create a virtual environment (venv) in the extracted directory
-```
-python3 -m venv c:path\to\shadowtube\venv
-```
-2. Activate virtual environment
-```
-venv\Scripts\activate.bat
-```
-3. Install dependencies
-```
-pip3 install -r requirements.txt
-```
-4. Establish "app.py"
-```
-set FLASK_APP=app.py
-```
-5. Run
-```
-python3 -m flask run
-```
