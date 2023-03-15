@@ -1,6 +1,0 @@
-requests
-PySocks
-cssselect
-lxml
-stem
-argparse

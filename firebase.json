@@ -1,0 +1,17 @@
+{
+	"hosting": {
+		"public": "static",
+		"ignore": [
+			"firebase.json",
+			"**/.*",
+			"**/node_modules/**"
+		],
+		"rewrites": [{
+			"source": "**",
+			"run": {
+				"serviceId": "shadowtu-be",
+				"region": "us-west1"
+			}
+		}]
+	}
+}

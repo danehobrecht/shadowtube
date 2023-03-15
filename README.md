@@ -1,4 +1,5 @@
 # ShadowTube
+![preview](https://github.com/danehobrecht/shadowtu-be/blob/main/static/images/shadowtube.png)
 Analyzation features:
  - Video links
  - Complete comment history
@@ -94,3 +95,48 @@ No abnormal behavior detected
  - Live streams
  - "Discussion", or, "Community" posts
  - Geometric unicode characters in titles
+
+
+### Self-host
+#### GNU/Linux, MacOS
+1. Download the zip and create a virtual environment named "venv" in the extracted directory
+```
+python3 -m venv /path/to/shadowtube/venv
+```
+2. Navigate to directory
+```
+cd /path/to/shadowtube
+```
+3. Install dependencies
+```
+pip3 install -r requirements.txt --no-warn-script-location
+```
+4. Establish "app.py"
+```
+export FLASK_APP=app.py
+```
+5. Run
+```
+python3 -m flask run
+```
+#### Windows
+1. Download the zip and create a virtual environment (venv) in the extracted directory
+```
+python3 -m venv c:path\to\shadowtube\venv
+```
+2. Activate virtual environment
+```
+venv\Scripts\activate.bat
+```
+3. Install dependencies
+```
+pip3 install -r requirements.txt
+```
+4. Establish "app.py"
+```
+set FLASK_APP=app.py
+```
+5. Run
+```
+python3 -m flask run
+```

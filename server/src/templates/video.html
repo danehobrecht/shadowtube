@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block body %}
+	<div class="center-page">
+		<div id="input">
+			<a style="text-decoration: none;" href="{{ url_for('comments') }}">
+				<h1>ShadowTube</h1>
+			</a>
+			<p>Enter the YouTube video link in question</p>
+			<form method="POST";>
+				<input
+					class="video-input"
+					type="text"
+					name="url"
+					placeholder="https://www.youtube.com/watch?v=Y6ljFaKRTrI" 
+					maxlength="43"
+				/><br><br>
+				<!-- <a href="/comments">Comments (alpha)</a> -->
+			</form>
+		</div>
+		<div class="loader toshow"></div>
+		<script>
+			$("input.video-input").on('keypress',function(e) {
+				if(e.which == 13) {
+					$("#input").hide();
+					$(".loader").show();
+				}
+			});
+		</script>
+	</div>
+{% endblock %}
