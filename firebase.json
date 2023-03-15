@@ -9,8 +9,8 @@
 		"rewrites": [{
 			"source": "**",
 			"run": {
-				"serviceId": "shadowtu-be",
-				"region": "us-west1"
+				"region": "us-west1",
+				"serviceId": "shadowtu-be"
 			}
 		}]
 	}
