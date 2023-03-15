@@ -64,6 +64,9 @@ node_modules/
 # dotenv environment variables file
 .env
 
+# .gcloudignore
+.gcloudignore
+
 # Other
 opt
 temp.json
