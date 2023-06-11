@@ -1,22 +1,21 @@
 # ShadowTube
-![preview](https://github.com/danehobrecht/shadowtube/blob/main/static/images/shadowtube.png)
 Analyzation features:
  - Video links
  - Complete comment history
-## Local setup
+## Setup
 1. Clone the repository and navigate to the directory
 ```
-git clone https://github.com/danehobrecht/shadowtube.git && cd shadowtube/server/src
+git clone https://github.com/danehobrecht/shadowtube.git && cd shadowtube
 ```
 2. Install dependencies
 ```
-pip install -r requests flask gunicorn pysocks cssselect lxml stem
+pip3 install -r requirements.txt
 ```
 3. [Configure torrc](#configure-torrc) (optional)
 4. Launch an instance of Tor Browser
-5. Execute
+5. Execute 
 ```
-python3 main.py
+python3 shadowtube.py
 ```
 ## Configure torrc
 1. Hash a custom control password
@@ -86,11 +85,11 @@ https://www.youtube.com/watch?v=e_pyT5yFuYY
 
 No abnormal behavior detected
 ```
-## Program prerequisites
- - [Python 3.7.3+ & pip](https://www.python.org/downloads/)
+## Prerequisites
+ - [Python 3.7.3+ & pip3](https://www.python.org/downloads/)
  - [Tor Browser](https://www.torproject.org/)
- - [venv](https://docs.python.org/3/library/venv.html)
-## Known issues
+ - [virtualenv](https://pypi.org/project/virtualenv/)
+## Known compatability issues (subject to change)
  - Video premieres
  - Live streams
  - "Discussion", or, "Community" posts
