@@ -1,7 +1,7 @@
 # Maintainer: Dane Hobrecht <76x5l22l@anonaddy.me>
 
 pkgname=shadowtube
-pkgver=1.0
+pkgver=1.0.0
 pkgrel=1
 pkgdesc="A YouTube shadowban detection program."
 arch=('any')
@@ -10,7 +10,7 @@ license=('GPL')
 depends=('python' 'requests' 'pysocks' 'cssselect' 'lxml' 'stem' 'argparse')
 
 source=("https://github.com/danehobrecht/shadowtube/releases/${pkgname}-${pkgver}.tar.gz")
-sha256sums=('put_sha256sum_here')
+sha256sums=('278c667a5279a7b72fde9f443de1adbc82d20cf211eaf6dfcd8ceec30cbff694')
 
 package() {
 	cd "$srcdir"
