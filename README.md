@@ -2,6 +2,7 @@
 Analyzation options/features:
 - Video URLs
 - Comment URLs
+- Web UI (under construction)
 - Complete comment histories (under construction)
 ## Installation
 ### Arch
