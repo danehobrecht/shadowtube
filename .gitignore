@@ -1,7 +1,9 @@
 src
+venv/**
+flask/**
 dev.txt
 *.tar.gz
 temp.json
 Google - My Activity.html
 Google - My Activity_files
-Google - My Activity_files/
+Google - My Activity_files/**

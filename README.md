@@ -1,28 +1,30 @@
 # ShadowTube
-Analyzation features:
-- Video links
-- Complete comment history
+Analyzation options/features:
+- Video URLs
+- Comment URLs
+- Complete comment histories (under construction)
 ## Installation
 ### Arch
 `yay -S shadowtube`
 ### Other (Unix)
-1. Clone the repository and navigate to the directory:
+1. Install prerequisites:
+ - [Python 3.7.3+ & pip](https://www.python.org/downloads/)
+ - [Tor Browser](https://www.torproject.org/)
+2. Clone the repository and navigate to the directory:
 ```
 git clone https://github.com/danehobrecht/shadowtube.git && cd shadowtube
 ```
-2. Create virtual environment:
+3. Create virtual environment:
 ```
 python -m venv venv && source /venv/bin/activate
 ```
-3. Install dependencies:
- - [Python 3.7.3+ & pip](https://www.python.org/downloads/)
- - [Tor Browser](https://www.torproject.org/)
+4. Install dependencies:
 ```
 pip install -r requirements.txt
 ```
-4. [Configure torrc](#configure-torrc) (optional)
-5. Launch an instance of Tor Browser
-6. Execute:
+5. [Configure torrc](#configure-torrc) (optional)
+6. Launch an instance of Tor Browser
+7. Execute:
 ```
 python shadowtube
 ```
@@ -61,7 +63,6 @@ This step limits connection only to the local loopback address, effectively limi
 ```
 Title: "Portal - 'Still Alive'"
 Video URL: https://www.youtube.com/watch?v=Y6ljFaKRTrI
-
 Interrupt (CTRL+C) to conclude the session
 
 [ X ] [ 1 / 8 ] [ N/A ]
@@ -74,35 +75,23 @@ Interrupt (CTRL+C) to conclude the session
  ╰──⚠ Throttling
 [ ✓ ] [ 8 / 8 ] [ Austria — 109.70.100.6 ]
 
-STATUS: QUESTIONABLE
+Status: Questionable
 ```
 ```
-"Google - My Activity.html"
-https://www.youtube.com/feed/history/comment_history
+Title: "Me at the zoo"
+Comment URL: https://www.youtube.com/watch?v=jNQXAC9IVRw&lc=UgzuC3zzpRZkjc5Qzsd4AaABAg
 Interrupt (CTRL+C) to conclude the session
 
-"Super clever, really like the use of chickens. The smaller scale interpretations seem to be popular as opposed to som..."
-https://www.youtube.com/watch?v=Drx1DEXa0GM
+[ ✓ ] [ 1 / 8 ] [ N/A ]
+[ ✓ ] [ 2 / 8 ] [ United States — 162.247.74.27 ] 
+[ ✓ ] [ 3 / 8 ] [ N/A ]
+[ ✓ ] [ 4 / 8 ] [ Germany — 84.252.122.55 ]
+[ ✓ ] [ 5 / 8 ] [ Luxembourg — 104.244.74.159 ]
+[ ✓ ] [ 6 / 8 ] [ Iceland — 89.147.109.233 ]
+[ ✓ ] [ 7 / 8 ] [ United States — 199.249.230.145 ]
+[ ✓ ] [ 8 / 8 ] [ Austria — 109.70.100.6 ]
 
-[ ✓ ] [ Germany — 185.220.102.8 ]
-[ ✓ ] [ Seychelles — 37.228.129.5 ]
-[ ✓ ] [ Germany — 185.220.101.213 ]
-
-"This is good work. Feel your pain with the beatmap conversion."
-https://www.youtube.com/watch?v=nWfF8wj19yk
-
-[ ✓ ] [ Germany — 185.220.100.249 ]
-[ ✓ ] [ N/A ]
-[ ✓ ] [ Austria — 109.70.100.50 ]
-
-"Doesn't look like failing to me. Glad you enjoyed the map."
-https://www.youtube.com/watch?v=e_pyT5yFuYY
-
-[ ✓ ] [ Switzerland — 176.10.104.240 ]
-[ ✓ ] [ Germany — 185.220.101.144 ]
-[ ✓ ] [ China — 23.154.177.131 ]
-
-STATUS: HEALTHY
+Status: Healthy
 ```
 ## Known compatability issues (subject to change)
 - Video premieres

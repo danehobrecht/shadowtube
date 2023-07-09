@@ -16,13 +16,14 @@ try:
 	from stem import Signal
 	from stem.connection import IncorrectPassword
 	from stem import SocketError
+	from argparse import RawDescriptionHelpFormatter
 	import lxml.html
 	import requests
 	import argparse
 	import socket
 	import socks
 except ImportError:
-	print("╟ Installing dependencies...", end=" ", flush=True)
+	print("> Installing dependencies...", end=" ", flush=True)
 	try:
 		subprocess.check_call([sys.executable, '-m', 'pip', '-r', 'install', 'requirements.txt'])
 	except SystemError:
@@ -33,14 +34,14 @@ except ImportError:
 
 YOUTUBE_VIDEO_URL = "https://www.youtube.com/watch?v={video_id}"
 YOUTUBE_COMMENTS_AJAX_URL = "https://www.youtube.com/comment_service_ajax"
-USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36"
+USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
 
 settings_dict = None
 file_paths = ['settings.json', '/etc/shadowtube/settings.json']
 for file_path in file_paths:
 	try:
-		with open(file_path) as f:
-			settings_dict = json.load(f)
+		with open(file_path) as fp:
+			settings_dict = json.load(fp)
 			break
 	except FileNotFoundError:
 		pass
@@ -58,36 +59,44 @@ socks_port = settings_dict["socks_port"]
 def tor_session():
 	session = requests.Session()
 	session.proxies = {
-		"http": "socks5://localhost:" + str(socks_port),
-		"https": "socks5://localhost:" + str(socks_port)
+		"http": f"socks5://localhost:{socks_port}",
+		"https": f"socks5://localhost:{socks_port}"
 	}
 	return session
 
 def tor_rotate():
 	time.sleep(10)
 	try:
-		with Controller.from_port(port = control_port) as c:
+		with Controller.from_port(port = control_port) as controller:
 			if use_control_pass:
-				c.authenticate(password = control_pass)
-				c.signal(Signal.NEWNYM)
+				controller.authenticate(password = control_pass)
+				controller.signal(Signal.NEWNYM)
 			else:
-				c.authenticate()
-				c.signal(Signal.NEWNYM)
+				controller.authenticate()
+				controller.signal(Signal.NEWNYM)
 	except IncorrectPassword:
-		print("\nError: Failed to authenticate. Control port password incorrect.")
-		sys.exit(1)
+		print("\nError: Failed to authenticate. Control port password incorrect."); sys.exit(1)
 	except SocketError:
-		print("\nError: Connection refused. Ensure cookie authentication/control port are enabled.")
-		sys.exit(1)
+		print("\nError: Connection refused. Ensure cookie authentication/control port are enabled."); sys.exit(1)
 
 def tor_validate():
-	print("╟ Connecting to Tor service...", end=" ", flush=True)
+	print("> Connecting to Tor service...", end=" ", flush=True)
 	try:
 		tor_session().get("https://api.seeip.org")
 		print("Done")
 	except IOError:
-		print("\nError: Couldn't connect to the Tor service (is Tor Browser running?).")
-		sys.exit(1)
+		print("Failed")
+		confirm = input("⫺ Launch Tor Browser? (y/N) ").lower()
+		if confirm in ["y", "yes"]:
+			try:
+				print("> Launching...", end=" ", flush=True)
+				subprocess.run("torbrowser-launcher", shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+				time.sleep(16)
+				print("Done")
+			except subprocess.CalledProcessError:
+				print("\nError: Failed."); sys.exit(1)
+		elif confirm in ["n", "no", ""]:
+			sys.exit(0)
 
 ### Output
 
@@ -103,213 +112,143 @@ def status(attempts, accessed):
 
 def geoip():
 	try:
-		r = tor_session().get("https://api.seeip.org/geoip")
-		r_dict = r.json()
-		print(f"[ {r_dict['country']} — {r_dict['ip']} ]")
+		response = tor_session().get("https://api.seeip.org/geoip")
+		response_dict = response.json()
+		print(f"{response_dict['country']} — {response_dict['ip']}")
 	except Exception:
-		print("[ N/A ]")
+		print("N/A")
 
-### Video
+### Video <https://www.youtube.com/watch?v=Y6ljFaKRTrI>
 
 def video(video_id):
 	attempts, accessed, analyses = 0, 0, 0
-	url = "https://www.youtube.com/watch?v=" + video_id
+	video_url = f"https://www.youtube.com/watch?v={video_id}"
 	try:
-		print("╟ Fetching metadata (this may take awhile)...", end=" ", flush=True)
+		print("> Fetching metadata...", end=" ", flush=True)
 		while True:
 			try:
-				title_request = tor_session().get(url).text
+				title_request = tor_session().get(video_url).text
 				parse_title = str(re.findall('<title>(.*?) - YouTube</title><meta name="title" content=', title_request))
 				title = html.unescape(parse_title.split("'")[1])
 				break
 			except IndexError:
 				tor_rotate()
 		print("Done")
+		while True:
+			cycles = input("⫺ Analytical intensity (default is 8): ")
+			if cycles == "":
+				cycles = 8
+				break
+			elif not cycles.isdigit():
+				print("Error: Invalid input. Please enter a positive integer.")
+			else:
+				cycles = int(cycles)
+				break
 		if title == "":
 			print("\nThis video isn't available anymore.")
 			sys.exit(0)
 		else:
-			print(f'\nTitle: "{title}"\nVideo URL: {url}\n\nInterrupt (CTRL+C) to conclude the session\n')
-		while analyses < 8:
-			tor_rotate()
+			print(f'\nTitle: "{title}"\nVideo URL: {video_url}\n\nInterrupt (CTRL+C) to conclude the session\n')
+		while analyses < cycles:
 			search_response = tor_session().get("https://www.youtube.com/results?search_query=" + "+".join(title.split())).text
-			if search_response.find('"title":{"runs":[{"text":"') >= 0:
+			if search_response.find('"title":{"cycles":[{"text":"') >= 0:
 				if search_response.find(title) >= 0:
-					accessed += 1
 					analyses += 1
-					print(f"[ ✓ ] [ {str(analyses)}/8 ]", end=" ")
+					accessed += 1
+					print(f"[\033[1m+\033[0m] [{str(analyses)}/8]", end=" ")
 				else:
 					analyses += 1
-					print(f"[ ✕ ] [ {str(analyses)}/8 ]", end=" ")
+					print(f"[\033[1m-\033[0m] [{str(analyses)}/8]", end=" ")
 				geoip()
 				attempts += 1
-			video_response = tor_session().get(url)
+			## TO-DO: evolve throttle detection
+			video_response = tor_session().get(video_url)
 			if re.search(r"googleusercontent.com/videoplayback", video_response.content.decode("utf-8")):
-				print("╰──⚠ Throttling")
+				print("╰──\033[1m⚠\033[0m Throttling")
+			tor_rotate()
 		status(attempts, accessed)
 	except KeyboardInterrupt:
 		status(attempts, accessed)
 
-### Comments
+### Comments <"https://www.youtube.com/watch?v=Y6ljFaKRTrI&lc=UgxmFEu_rNYmz8yEY0B4AaABAg">
 
-def comments():
-	attempts, accessed, index = 0, 0, 1
-	print(f'\n"Google - My Activity.html"\nhttps://www.youtube.com/feed/history/comment_history\nInterrupt (CTRL+C) to conclude the session\n"')
+def comment(video_id, comment_id):
+	attempts, accessed, analyses = 0, 0, 0
+	video_url = f"https://www.youtube.com/watch?v={video_id}"
+	comment_url = f"{video_url}&lc={comment_id}"
 	try:
-		with io.open("Google - My Activity.html", "r", encoding = "utf-8") as raw_html:
-			clean_html = raw_html.read().replace("\n", "").replace("'", "`")
-			text_list = str(re.findall('<div class="QTGV3c" jsname="r4nke">(.*?)</div><div class="SiEggd">', clean_html))
-			uuid_list = str(re.findall('data-token="(.*?)" data-date', clean_html))
-			url_list = str(re.findall('<div class="iXL6O"><a href="(.*?)" jslog="65086; track:click"', clean_html))
-			for i in range(int(url_list.count("'") / 2)):
-				text = text_list.split("'")[index]
-				uuid = uuid_list.split("'")[index]
-				url = url_list.split("'")[index]
-				comment_url = url + "&lc=" + uuid
-				instances = 0
-				index += 2
-				print('\n"' + text.replace("`", "'") + '"')
-				print(url + "\n")
-				for i in range(0, 3, 1):
-					comments_fetch(url.replace("https://www.youtube.com/watch?v=", ""))
-					if private == True:
-						break
-					with open("temp.json", "r") as json:
-						j = json.read()
-						if j.find(uuid) >= 0:
-							print("[ ✓ ]", end=" ")
-							instances += 1
-						else:
-							print("[ ✕ ]", end=" ")
-							if instances > 0:
-								instances -= 1
-						geoip()
-					tor_rotate()
-				if private == False:
-					if instances == 3:
-						accessed += 1
-					attempts += 1
+		print("> Fetching metadata...", end=" ", flush=True)
+		while True:
+			try:
+				title_request = tor_session().get(video_url).text
+				parse_title = str(re.findall('<title>(.*?) - YouTube</title><meta name="title" content=', title_request))
+				title = html.unescape(parse_title.split("'")[1])
+				break
+			except IndexError:
+				tor_rotate()
+		print("Done")
+		while True:
+			cycles = input("⫺ Analytical intensity (default is 8): ")
+			if cycles == "":
+				cycles = 8
+				break
+			elif not cycles.isdigit():
+				print("Error: Invalid input. Please enter a positive integer.")
+			else:
+				cycles = int(cycles)
+				break
+		print(f'\nTitle: {title}\nComment URL: {comment_url}\n\nInterrupt (CTRL+C) to conclude the session\n')
+		while analyses < cycles:
+			comments_fetch(video_id)
+			with open("comments.json", "r") as comments:
+				if comments.read().find(comment_id) >= 0:
+					print("[\033[1m+\033[0m]", end=" ")
+					analyses += 1
+					accessed += 1
+				else:
+					print("[\033[1m-\033[0m]", end=" ")
+					analyses += 1
+				geoip()
+			attempts += 1
+			tor_rotate()
 		status(attempts, accessed)
 	except KeyboardInterrupt:
 		status(attempts, accessed)
+
+## <yt-dlp --dump-json --no-download --no-warnings --flat-playlist --proxy socks5://localhost:{socks_port} --write-comments --extractor-args youtube:max_comments=1000 https://www.youtube.com/watch?v={video_id} | > temp.json>
 
 def comments_fetch(video_id):
-	parser = argparse.ArgumentParser()
+	## Threading from multiple different connections?
+	## Add progress bar
+	command = (
+		f"yt-dlp "
+		f"--dump-json "
+		f"--no-download "
+		f"--no-warnings "
+		f"--flat-playlist "
+		f"--write-comments "
+		## Proxies from same socks5 session
+		f"--proxy socks5://localhost:{socks_port} "
+		f"--extractor-args youtube:max_comments=1000 "
+		f"https://www.youtube.com/watch?v={video_id} > temp.json"
+	)
+	print("> Fetching comments...", end=" ", flush=True)
 	try:
-		args, unknown = parser.parse_known_args()
-		output = "temp.json"
-		limit = 1000
-		if not video_id or not output:
-			parser.print_usage()
-			raise ValueError("Error: Faulty video I.D.")
-		if os.sep in output:
-			if not os.path.exists(outdir):
-				os.makedirs(outdir)
-		count = 0
-		with io.open(output, 'w', encoding='utf8') as fp:
-			for comment in comments_download(video_id):
-				comment_json = json.dumps(comment, ensure_ascii=False)
-				print(comment_json.decode('utf-8') if isinstance(comment_json, bytes) else comment_json, file=fp)
-				count += 1
-				if limit and count >= limit:
-					break
-	except Exception as e:
-		print('Error:', str(e)); sys.exit(1)
-
-def find_value(html, key, num_chars=2, separator='"'):
-	pos_begin = html.find(key) + len(key) + num_chars
-	pos_end = html.find(separator, pos_begin)
-	return html[pos_begin: pos_end]
-
-def ajax_request(session, url, params=None, data=None, headers=None, retries=5, sleep=20):
-	for _ in range(retries):
-		response = session.post(url, params=params, data=data, headers=headers)
-		if response.status_code == 200:
-			return response.json()
-		if response.status_code in [403, 413]:
-			return {}
-		else:
-			time.sleep(sleep)
-
-def comments_download(video_id, sleep=.1):
-	global private
-	private = False
-	session = requests.Session()
-	session.headers['User-Agent'] = USER_AGENT
-	response = session.get(YOUTUBE_VIDEO_URL.format(video_id=video_id))
-	html = response.text
-	session_token = find_value(html, 'XSRF_TOKEN', 3)
-	session_token = session_token.encode('ascii').decode('unicode-escape')
-	data = json.loads(find_value(html, 'var ytInitialData = ', 0, '};') + '}')
-	for renderer in search_dict(data, 'itemSectionRenderer'):
-		ncd = next(search_dict(renderer, 'nextContinuationData'), None)
-		if ncd:
-			break
-	try:
-		if not ncd:
-			private = False
-			return
-	except UnboundLocalError:
-		private = True
-		print("Private video")
-		return
-	continuations = [(ncd['continuation'], ncd['clickTrackingParams'], 'action_get_comments')]
-	while continuations:
-		continuation, itct, action = continuations.pop()
-		response = ajax_request(session, YOUTUBE_COMMENTS_AJAX_URL,
-								params={action: 1,
-										'pbj': 1,
-										'ctoken': continuation,
-										'continuation': continuation,
-										'itct': itct},
-								data={'session_token': session_token},
-								headers={'X-YouTube-Client-Name': '1',
-										'X-YouTube-Client-Version': '2.20201202.06.01'})
-		if not response:
-			break
-		if list(search_dict(response, 'externalErrorMessage')):
-			raise RuntimeError('Error returned from server: ' + next(search_dict(response, 'externalErrorMessage')))
-		if action == 'action_get_comments':
-			section = next(search_dict(response, 'itemSectionContinuation'), {})
-			for continuation in section.get('continuations', []):
-				ncd = continuation['nextContinuationData']
-				continuations.append((ncd['continuation'], ncd['clickTrackingParams'], 'action_get_comments'))
-			for item in section.get('contents', []):
-				continuations.extend([(ncd['continuation'], ncd['clickTrackingParams'], 'action_get_comment_replies')
-									for ncd in search_dict(item, 'nextContinuationData')])
-		elif action == 'action_get_comment_replies':
-			continuations.extend([(ncd['continuation'], ncd['clickTrackingParams'], 'action_get_comment_replies')
-								for ncd in search_dict(response, 'nextContinuationData')])
-		for comment in search_dict(response, 'commentRenderer'):
-			yield {'cid': comment['commentId'],'text': ''.join([c['text'] for c in comment['contentText']['runs']])}
-		time.sleep(sleep)
-
-def search_dict(partial, search_key):
-	stack = [partial]
-	while stack:
-		current_item = stack.pop()
-		if isinstance(current_item, dict):
-			for key, value in current_item.items():
-				if key == search_key:
-					yield value
-				else:
-					stack.append(value)
-		elif isinstance(current_item, list):
-			for value in current_item:
-				stack.append(value)
+		## "stderr" parameter discards the yt-dlp's error output for cleanliness
+		output = subprocess.check_output(command, stderr=subprocess.DEVNULL, shell=True)
+	except OSError:
+		print("Failed")
+		tor_rotate()
+	print("Done")
+	with open('temp.json') as temp_json:
+		data = json.load(temp_json)
+	ids = [comment['id'] for comment in data['comments']]
+	output_data = {"ids": ids}
+	with open('comments.json', 'w') as comments_json:
+		json.dump(output_data, comments_json)
 
 ### Init
 
-def error_handling(function):
-	def wrapper(*args, **kwargs):
-		try:
-			# Reference to wrapped (decorated) function and its respective arguments
-			return function(*args, **kwargs)
-		except Exception as e:
-			print("\nError:", str(e))
-	return wrapper
-
-@error_handling
 def main():
 	logo = """
  ▄█████████████▄   ▄▄▄▄ .▄▄             ╔▄,             ╓▄▄▄▄▄,    .▄▄
@@ -321,33 +260,37 @@ def main():
 
                             Created by Dane Hobrecht
 	"""
-	parser = argparse.ArgumentParser(prog="shadowtube", description="A YouTube shadowban detection program.")
+	parser = argparse.ArgumentParser(prog="shadowtube", description="A YouTube shadowban detection program.", formatter_class=argparse.RawTextHelpFormatter)
 	group = parser.add_mutually_exclusive_group()
-	group.add_argument("-v", "--video", metavar="VIDEO_URL", help="analyze an individual video URL ('https://youtu.be/VIDEO_ID' or 'https://www.youtube.com/watch?v=VIDEO_ID')")
-	group.add_argument("-c", "--comments", help="analyze locally available comment history", action="store_true")
+	group.add_argument("-v", "--video", metavar="VIDEO_URL", help="video analysis ('https://youtu.be/<VIDEO_ID>', 'https://www.youtube.com/watch?v=<VIDEO_ID>')")
+	group.add_argument("-c", "--comment", metavar="COMMENT_URL", help="""format: ('"https://www.youtube.com/watch?v=<VIDEO_ID>&lc=<COMMENT_ID>"')\nnote: URL must be wrapped in quotes.""")
 	args = parser.parse_args()
 	os.system('clear')
 	print(logo)
 	if args.video:
-		tor_validate()
 		video_url = str(args.video)
 		if "https://www.youtube.com/watch?v=" in video_url:
 			video_id = video_url.replace("https://www.youtube.com/watch?v=", "")
 		elif "https://youtu.be/" in video_url:
 			video_id = video_url.replace("https://youtu.be/", "")
-		else:
-			print("Invalid input.")
-			return
 		if len(video_id) == 11:
-			response = tor_session().get("https://www.youtube.com/watch?v=" + video_id)
+			tor_validate()
 			video(video_id)
 		else:
-			print("Invalid input.")
-	elif args.comments:
-		tor_validate()
-		print('╟ The basic HTML page data from https://www.youtube.com/feed/history/comment_history must be locally available to the script as "Google - My Activity.html"')
-		confirm = input("╟ Proceed? (y/N) ").lower()
+			print("Error: Invalid input."); sys.exit(1)
+	elif args.comment:
+		comment_url = str(args.comment)
+		if "https://www.youtube.com/watch?v=" in comment_url:
+			comment_id = comment_url.split('&lc=', 1)[-1]
+			video_id = comment_url.replace("https://www.youtube.com/watch?v=", "").split('&lc=', 1)[0]
+		if len(video_id) == 11 and len(comment_id) == 26:
+			tor_validate()
+			comment(video_id, comment_id)
+		else:
+			print('Error: Invalid input. Refer to "shadowtube --help".'); sys.exit(1)
 		"""
+		print('> The basic HTML page data from https://www.youtube.com/feed/history/comment_history must be locally available to the script as "Google - My Activity.html"')
+		confirm = input("⫺ Proceed? (y/N) ").lower()
 		if confirm in ["y", "yes"]:
 			try:
 				with open("Google - My Activity.html", "r"):
@@ -355,18 +298,19 @@ def main():
 			except FileNotFoundError:
 				print("\nError: File does not exist."); sys.exit(1)
 		elif confirm in ["n", "no", ""]:
-			sys.exit(1)
+			sys.exit(0)
+		sys.exit(0)
 		"""
-		print("🏗 Under construction.")
-		sys.exit(1)
 	else:
 		try:
-			os.system("shadowtube -h")
+			os.system("python shadowtube -h")
 		except OSError:
 			try:
-				os.system("python shadowtube -h")
+				os.system("shadowtube -h")
 			except OSError:
 				print("\nError: Missing executable."); sys.exit(1)
 
 if __name__ == "__main__":
 	main()
+
+## constantly test for interruption, close tor browser, and delete json files

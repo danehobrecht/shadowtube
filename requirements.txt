@@ -1,5 +1,6 @@
 lxml
 stem
+yt-dlp
 pysocks
 argparse
 requests
