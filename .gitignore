@@ -3,6 +3,7 @@ venv/**
 dev.txt
 *.tar.gz
 temp.json
+flask/main.py
 flask/gcloud/**
 Google - My Activity.html
 Google - My Activity_files
