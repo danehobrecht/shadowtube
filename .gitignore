@@ -1,7 +1,7 @@
 src
 venv/**
-flask/**
 dev.txt
+flask/**
 *.tar.gz
 temp.json
 Google - My Activity.html
