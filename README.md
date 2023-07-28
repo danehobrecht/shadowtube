@@ -7,7 +7,7 @@ Analyzation options/features:
 ## Installation
 ### Arch
 `yay -S shadowtube`
-### Other (Unix)
+### Other (UNIX)
 1. Install prerequisites:
  - [Python 3.7.3+ & pip](https://www.python.org/downloads/)
  - [Tor Browser](https://www.torproject.org/)
