@@ -270,9 +270,9 @@ def main():
 	if args.video:
 		video_url = str(args.video)
 		if "https://www.youtube.com/watch?v=" in video_url:
-			video_id = video_url.replace("https://www.youtube.com/watch?v=", "")
+			video_id = video_url.replace("https://www.youtube.com/watch?v=", "").replace("?feature=shared", "")
 		elif "https://youtu.be/" in video_url:
-			video_id = video_url.replace("https://youtu.be/", "")
+			video_id = video_url.replace("https://youtu.be/", "").replace("?feature=shared", "")
 		if len(video_id) == 11:
 			tor_validate()
 			video(video_id)
