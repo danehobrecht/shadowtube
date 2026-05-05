@@ -99,3 +99,6 @@ Status: Healthy
 - Live streams
 - "Discussion", or, "Community" posts
 - Geometric unicode characters in titles
+
+## Special Thanks
+- [@Hauteknits](https://github.com/hauteknits) for guidance on Tor networking and writing the respective README portion.
